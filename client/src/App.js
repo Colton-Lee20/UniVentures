@@ -1,33 +1,31 @@
 import React, {useState, useEffect} from 'react'
 
-function App() {
+import axios from 'axios';
 
-  const [data, setData] = useState([{}])
+const DataComponent = () => {
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("/members").then(
-      res => res.json()
-    ).then(
-      data => {
-        setData(data)
-        console.log(data)
-      }
-    )
-  }, [])
+    // Fetch data from Flask backend
+    axios.get('http://localhost:5000/get_data')
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
+  }, []);
 
   return (
     <div>
-
-        {(typeof data.members == 'undefined') ? (
-          <p>Loading...</p>
-        ) : (
-          data.members.map((member, i) => (
-            <p key={i}>{member}</p>
-          ))
-        )}
-
+      <h1>Data from MySQL</h1>
+      <ul>
+        {data.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default DataComponent;

@@ -5,12 +5,11 @@ import './css/input.css';
 function Signup() {
     const [email, setEmail] = useState('');         //EMAIL
     const [password, setPassword] = useState('');   //PASSWORD
-    const [isLogin, setIsLogin] = useState(true);   //if exists login, else signup
     const [message, setMessage] = useState('');     // Success or error message
     const [error, setError] = useState(null);       // Error handling
 
 
-    //ACCOUNT LOGIN/SIGNUP
+    //ACCOUNT SIGNUP
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -18,11 +17,11 @@ function Signup() {
 
         // BUTTON PRESSED
         try {
-            const response = await axios.post(url, {email, password});  //BACKEND REQUEST
-            
-            if (response.status==200) {                                 //HOORAY
-              setMessage(response.data.message);
-              setError(null);   //clear error
+            const response = await axios.post(url, {email, password}, {withCredentials: true});  //BACKEND REQUEST
+                                                                     //withCredentials accepts cookies
+
+            if (response.status===201) {                                 //HOORAY
+              window.location.href = '/account';
             }
         } catch (error) {                                               //aw man
             setError(error.response.data.message);

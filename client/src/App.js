@@ -3,8 +3,6 @@ import axios from 'axios';
 import "./css/input.css";
 
 import { BrowserRouter as Router, Routes, Route, Switch, Link } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import DataComponent from './DataComponent';
 
 import MainPage from './MainPage';
 import Login from './Login';

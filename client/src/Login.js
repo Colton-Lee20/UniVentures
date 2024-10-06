@@ -5,12 +5,10 @@ import './css/input.css';
 function Login() {
     const [email, setEmail] = useState('');         //EMAIL
     const [password, setPassword] = useState('');   //PASSWORD
-    const [isLogin, setIsLogin] = useState(true);   //if exists login, else signup
     const [message, setMessage] = useState('');     // Success or error message
     const [error, setError] = useState(null);       // Error handling
 
-
-    //ACCOUNT LOGIN/SIGNUP
+    //ACCOUNT LOGIN
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -18,13 +16,12 @@ function Login() {
 
         // BUTTON PRESSED
         try {
-            const response = await axios.post(url, {email, password});  //BACKEND REQUEST
-            
-            if (response.status==200) {                                 //HOORAY
-              setMessage(response.data.message);
-              setError(null);   //clear error
+            const response = await axios.post(url, {email, password}, { withCredentials: true });  //BACKEND REQUEST
+                                                                      //withCredentials accepts cookies
+            if (response.status===200) {
+              window.location.href = '/account';
             }
-        } catch (error) {                                               //aw man
+        } catch (error) {
             setError(error.response.data.message);
             setMessage('');   //clear success
         }
@@ -75,7 +72,6 @@ function Login() {
 
         {/* Display error message */}
         {error && <p className="error font-bold">{error}</p>}
-
     </div>
     );
 }

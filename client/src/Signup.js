@@ -13,7 +13,7 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const url = 'http://localhost:5000/signup';
+        const url = 'http://localhost:5000/api/auth/signup';
 
         // BUTTON PRESSED
         try {

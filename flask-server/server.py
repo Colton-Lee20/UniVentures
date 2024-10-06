@@ -38,7 +38,7 @@ def get_data():
 
 
 # LOGIN ROUTE
-@app.route('/login', methods=['POST'])
+@app.route('/api/auth/login', methods=['POST'])
 def login():
     # USER INPUT
     data = request.json
@@ -87,7 +87,7 @@ def login():
 
 
 # SIGNUP ROUTE
-@app.route('/signup', methods=['POST'])
+@app.route('/api/auth/signup', methods=['POST'])
 def signup():
     # USER INPUT
     data = request.json
@@ -146,6 +146,38 @@ def check_login():
     else:
         return jsonify({'isLoggedIn': False})
 
+
+
+
+@app.route('/api/account', methods=['GET'])
+def get_account_info():
+    
+    # NOT LOGGED IN
+    if 'user_id' not in session:
+        return jsonify({"message": "User not logged in"}), 401
+    
+    user_id = session['user_id']
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="CSC450-UniVentures",
+        database="users"
+    )
+    cursor = db.cursor(dictionary=True)
+    
+    try:
+        query = "SELECT id, email FROM accounts WHERE id = %s"
+        cursor.execute(query, (user_id,))
+        user_info = cursor.fetchone()
+        
+        if user_info:
+            return jsonify(user_info), 200
+        else:
+            return jsonify({"message": "User not found"}), 404
+            
+    finally:
+        cursor.close()
+        db.close()
 
 
 

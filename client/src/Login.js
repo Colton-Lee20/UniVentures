@@ -12,7 +12,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const url = 'http://localhost:5000/login';
+        const url = 'http://localhost:5000/api/auth/login';
 
         // BUTTON PRESSED
         try {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {Navigate, Link } from 'react-router-dom';
+import {Navigate } from 'react-router-dom';
 import axios from 'axios';
-import logo from './Images/logo.webp'
+import Banner from './Banner';
 function Account() {
 
     const [loading, setLoading] = useState(true);           //dont load until cookie checked
@@ -40,7 +40,7 @@ function Account() {
 
     //DONT MOVE DOWN TO LOGIN OR ACCOUNT PAGE YET - need to check if logged in already
     if (loading) {
-      return <div>Loading...</div>;  // could just put navbar here
+      return <div><Banner/></div>;  // could just put navbar here
     }
 
 
@@ -54,47 +54,13 @@ function Account() {
 
 
     //LOGGED IN - ACCOUNT PAGE
+    //need to add a log out button. needs to delete session cookie
     return (
 
         /*  NAVBAR  */
         <div className="bg-[#ffffff] dark:bg-gray-800 w-screen h-screen overflow-hidden">
         {/* navbar */}
-        <div className='w-screen py-2 px-5 lg:px-10 bg-[#101c26] flex justify-between text-neutral-300'>
-          <span className='text-lg font-semibold'>
-          <Link to="/"><img src={logo} alt="Logo" style={{ width: '80px', height: 'auto' }}/></Link>
-          </span>
-
-          <ul className='hidden md:flex items-center space-x-5'>
-            <li><Link to="/about">About</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
-            <li><Link to="/account">Account</Link></li>
-          </ul>
-
-          {/*Hamburger Menu*/}
-          <button className='space-y-1 group md:hidden'>
-            <div className='w-6 h-1 bg-white'></div>
-            <div className='w-6 h-1 bg-white'></div>
-            <div className='w-6 h-1 bg-white'></div>
-
-            {/* Menu */}
-            <ul className='bg-[252525] w-screen pb-10 absolute -top-full group-focus:top-0 right-0 duration-150 flex flex-col space-y-3 justify-end'>
-              
-              <li className='flex justify-center w-full py-4 bg-[#252525] hover:bg-[#D3D3D3]'>
-                <Link to="/about">About</Link>
-              </li>
-              <li className='flex justify-center w-full py-4 bg-[#252525] hover:bg-[#D3D3D3]'>
-                <Link to="/contact">Contact</Link>
-              </li>
-              <li className='flex justify-center w-full py-4 bg-[#252525] hover:bg-[#D3D3D3]'>
-                <Link to="/account">Account</Link>
-              </li>
-            </ul>
-          </button>
-
-
-          {/* REST OF PAGE */}
-
-            </div>
+          <Banner/>
             <div className="account-info">
                 {userInfo ? (
                     <div>

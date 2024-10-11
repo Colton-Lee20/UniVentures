@@ -3,6 +3,9 @@ from flask_cors import CORS
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
+from SchoolDB import get_schools
+from mysql.connector import Error
+
 
 app = Flask(__name__)
 
@@ -180,8 +183,46 @@ def get_account_info():
         db.close()
 
 
+#Search Schools
+@app.route('/api/schools', methods=['GET'])
+def search_schools():
+    query = request.args.get('query')
+    schools = get_schools(query)  # Function to query the database
+    return jsonify(schools)
+
+
+# Get school details by ID
+@app.route('/api/schools/<int:school_id>', methods=['GET'])
+def get_school_by_id(school_id):
+    connection = mysql.connector.connect(
+        host='localhost',            
+        database='schools',  
+        user='root',       
+        password='CSC450-UniVentures'     
+    )
+
+    try:
+        if connection.is_connected():
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM names WHERE id = %s", (school_id,))
+            school = cursor.fetchone()  # Fetch the school details
+
+            if school:
+                return jsonify(school)  # Return the school data in JSON format
+            else:
+                return jsonify({'error': 'School not found'}), 404  # Return 404 if not found
+    except Error as e:
+        print(f"Error: {e}")
+        return jsonify({'error': 'Internal Server Error'}), 500  # Handle errors
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
 
     

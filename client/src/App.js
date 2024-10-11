@@ -10,6 +10,7 @@ import Login from './Login';
 import Signup from './Signup';
 import Account from './Account';
 import NotFoundPage from './NotFoundPage';
+import SchoolDetail from './SchoolPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path='/Signup' element={< Signup />}></Route>
           <Route path='/Account/*' element={< Account />}></Route>
           <Route path='*' element={< NotFoundPage />}></Route>
+          <Route path="/school/:schoolID" element={<SchoolDetail />} /> 
         </Routes>
     </Router>
     

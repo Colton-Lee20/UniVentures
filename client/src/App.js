@@ -11,6 +11,10 @@ import Signup from './Signup';
 import Account from './Account';
 import NotFoundPage from './NotFoundPage';
 import SchoolDetail from './SchoolPage';
+import Restaurant from './Restaurant';
+import Stores from './Stores';
+import Activities from './Activities';
+import Clubs from './Clubs';
 
 function App() {
   return (
@@ -25,6 +29,10 @@ function App() {
           <Route path='/Account/*' element={< Account />}></Route>
           <Route path='*' element={< NotFoundPage />}></Route>
           <Route path="/school/:schoolID" element={<SchoolDetail />} /> 
+                    <Route path="restaurant" element={<Restaurant />} />
+                    <Route path="stores" element={<Stores />} />
+                    <Route path="activities" element={<Activities />} />
+                    <Route path="clubs" element={<Clubs />} />
         </Routes>
     </Router>
     

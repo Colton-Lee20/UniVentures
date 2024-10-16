@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import Banner from './Banner';
 
@@ -31,9 +31,37 @@ const SchoolDetail = () => {
                 <h1 className="text-2xl font-bold">{school.school_name}</h1>
             
                 {/* Add more school details here */}
+                <nav>
+                    <ul className="flex space-x-6 justify-center mb-6">
+                        <li>
+                            <Link to={`/school/${schoolID}/restaurant`} className="tab-link">
+                                Restaurant
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={`/school/${schoolID}/stores`} className="tab-link">
+                                Stores
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={`/school/${schoolID}/activities`} className="tab-link">
+                                Activities
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={`/school/${schoolID}/clubs`} className="tab-link">
+                                Clubs
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
+                <div>
+                    <Outlet />
+                </div>
             </div>
         </main>
     );
+
 };
 
 export default SchoolDetail;

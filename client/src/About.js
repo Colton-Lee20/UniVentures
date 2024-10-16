@@ -6,9 +6,7 @@ function About() {
     return (
     <div className="bg-[#ffffff] dark:bg-gray-800 w-screen h-screen overflow-hidden">
         <Banner/>
-        <div>
-            About page!
-        </div>
+        <h2>About Page</h2>
     </div>
     );
 }

@@ -33,7 +33,7 @@ function Account() {
 
   // DONT MOVE DOWN TO LOGIN OR ACCOUNT PAGE YET - need to check if logged in already
   if (loading) {
-    return <div><Banner/></div>;  // Could just put navbar here
+    return <div className='bg-[#101c26] w-screen min-h-screen'><div><Banner/></div></div>;  // Could just put navbar here
   }
 
   // CHECK LOGIN COOKIE
@@ -43,7 +43,7 @@ function Account() {
 
   // LOGGED IN - ACCOUNT PAGE
   return (
-    <div className="bg-[#0d0d0d] dark:bg-gray-900 min-h-screen text-white">
+    <div className="bg-[#101c26] dark:bg-gray-900 min-h-screen text-white">
       {/* Navbar */}
       <Banner />
   

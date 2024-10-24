@@ -5,7 +5,7 @@ import background from './Images/About-Background.jpg'
 
 function About() {
     return (
-    <div class='w-screen h-screen bg-cover bg-center' style={{ backgroundImage: `url(${background})` }}>
+    <div className='w-screen h-screen bg-cover bg-center' style={{ backgroundImage: `url(${background})` }}>
         <Banner/>
             <div className='flex flex-col items-center mt-40 mx-40 px-10 py-10 rounded-2xl  bg-[#101c26]'>
                 <div className='text-white font-serif text-5xl mb-4'>UniVentures</div>

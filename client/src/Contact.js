@@ -23,7 +23,7 @@ function Contact() {
                             <form action=''>
                                 <div className='space-y-6'>
                                     <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                                        <label for='name' className='sr-only'>Name</label>
+                                        <label htmlFor='name' className='sr-only'>Name</label>
                                         <input
                                         type='text'
                                         name='name'
@@ -31,7 +31,7 @@ function Contact() {
                                         className='border text-gray-900 text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white'
                                         placeholder='Enter your name'
                                         />
-                                        <label for='email' className='sr-only'>Email</label>
+                                        <label htmlFor='email' className='sr-only'>Email</label>
                                         <input
                                         type='email'
                                         name='email'
@@ -40,7 +40,7 @@ function Contact() {
                                         placeholder='Enter your email'
                                         />
                                     </div>
-                                    <label for='subject' className='sr-only'>Subject</label>
+                                    <label htmlFor='subject' className='sr-only'>Subject</label>
                                         <input
                                         type='text'
                                         name='subject'
@@ -48,7 +48,7 @@ function Contact() {
                                         className='border text-gray-900 text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white'
                                         placeholder='Enter your subject'
                                         />
-                                        <label for='comments' className='sr-only'>Message</label>
+                                        <label htmlFor='comments' className='sr-only'>Message</label>
                                         <textarea
                                         name='comments'
                                         id='comments'

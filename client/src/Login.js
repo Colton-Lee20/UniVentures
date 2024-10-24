@@ -106,21 +106,21 @@ function Login() {
                           className="border rounded mb-2 w-60 border text-gray-900 text-sm rounded focus:ring-0 focus:border-gray-400 block p-2 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white"
                         />
                       </div>
+                      
                       <div className='flex justify-end w-full'>
-                        <button type="submit" className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded mb-5 ml-auto">
+                        <button type="submit" className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-auto">
                           Login
                         </button>
                       </div>
                     </form>
                   </div>
-                  <div className="flex flex-col items-center justify-center text-center mt-3">
-                    <span className="cursor-default text-white">
+                  <div className="flex flex-col items-center justify-center text-center">
+                    <div className="min-w-[800px]">
+                      {<p className="error font-bold text-red-500 mt-2 h-3">{error}</p>}
+                    </div>
+                    <span className="cursor-default text-white mt-16">
                       Create an account? <a href="/signup" className="text-red-400">Sign up</a>
                     </span>
-                    <div className="mt-4 min-w-[800px]">
-                      {message && <p className="success font-bold text-green-500">{message}</p>}
-                      {error && <p className="error font-bold text-red-500">{error}</p>}
-                    </div>
                   </div>
                 </div>
               </div>

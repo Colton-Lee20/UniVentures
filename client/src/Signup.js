@@ -12,6 +12,7 @@ function Signup() {
     const [loading, setLoading] = useState(true);           // Don't load until cookie checked
     const [isLoggedIn, setIsLoggedIn] = useState(false);    // Logged in boolean
     
+
     //CHECK IF USER IS LOGGED IN
     useEffect(() => {
       const checkLoginStatus = async () => {
@@ -34,9 +35,49 @@ function Signup() {
       checkLoginStatus();
     }, []); 
 
-    //ACCOUNT SIGNUP
+
+
+    //EMAIL VALIDATION SETUP
+    const validateEmail = (email) => {
+      const eduEmailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[eE][dD][uU]$/;
+      return eduEmailPattern.test(email);
+    };
+
+    //PASSWORD VALIDATION SETUP
+    const validatePassword = (password) => {
+      const rules = [
+          { label: '8 characters', isValid: password.length >= 8 },
+          { label: '1 digit', isValid: /\d/.test(password) },
+          { label: '1 uppercase letter', isValid: /[A-Z]/.test(password) },
+          { label: '1 special character', isValid: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password) },
+      ];
+      return rules;
+  };
+
+
+    //ACCOUNT SIGNUP 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        //check input requirements
+        if (!validateEmail(email)) {
+          setError("Please enter a valid .edu email address");
+          return;
+        }
+
+        const passwordRules = validatePassword(password);
+        const invalidRules = passwordRules.filter(rule => !rule.isValid);
+
+        //display broken rules
+        if (invalidRules.length > 0) {
+            const unmetRequirements = invalidRules.map(rule => rule.label).join(', ');
+            setMessage(`Password must include:`);
+            setError(unmetRequirements);
+            return;
+        }
+
+
+
 
         const url = 'http://localhost:5000/api/auth/signup';
 
@@ -53,6 +94,8 @@ function Signup() {
             setMessage('');   //clear success
         }
     };
+
+
     // DONT MOVE DOWN - need to check if cookie exists
     if (loading) {
       return <div className='bg-[#101c26] w-screen min-h-screen'><div><Banner/></div></div>;  // Could just put navbar here
@@ -109,23 +152,20 @@ function Signup() {
                                   />
                                 </div>
                                 <div className='flex justify-end w-full'>
-                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded mb-5 ml-auto">
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-auto">
                                   Sign up
                                 </button>
                                 </div>
                               </form>
                               </div>
-                            <div className="flex flex-col items-center justify-center text-center mt-3">
-                              <span className="cursor-default text-white">
-                                Already have an account? <a href="/login" className="text-red-400">Login</a>
-                              </span>
-
-                              <div className="mt-4 min-w-[800px]">
-                                
-                                {message && <p className="success font-bold text-green-500">{message}</p>}
-
-                                {error && <p className="error font-bold text-red-500">{error}</p>}
+                              <div className="flex flex-col items-center justify-center text-center">
+                              <div className="min-w-[800px]">
+                                {<p className="success font-bold text-white mt-4 mb-3 h-3">{message}</p>}
+                                {<p className="error font-bold text-red-500 h-3">{error}</p>}
                               </div>
+                              <span className="cursor-default text-white mt-16">
+                                Already have an account? <a href="/login" className="text-red-400">Sign up</a>
+                              </span>
                             </div>
                           </div>
                       </div>

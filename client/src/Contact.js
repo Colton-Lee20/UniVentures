@@ -4,9 +4,8 @@ import Banner from './Banner';
 
 function Contact() {
     return (
-    <div className="bg-[#ffffff] dark:bg-gray-800 w-screen min-h-screen overflow-hidden">
-        <Banner/>
         <div className='bg-[#101c26] min-h-screen'>
+            <Banner/>
             <section className='py-2'>
                 <div className='max-w-6xl mx-auto p-4 md:p-16 xl:p-20'>
                     <div className='lg:w-2/3 space-y-5 text-center mx-auto'>
@@ -72,7 +71,6 @@ function Contact() {
                 </div>
             </section>
         </div>
-    </div>
     );
 }
 export default Contact;

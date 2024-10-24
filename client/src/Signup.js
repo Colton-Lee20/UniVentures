@@ -32,7 +32,7 @@ function Signup() {
           }
       };
       checkLoginStatus();
-    }); 
+    }, []); 
 
     //ACCOUNT SIGNUP
     const handleSubmit = async (e) => {
@@ -65,9 +65,8 @@ function Signup() {
 
     // COOKIE DOES NOT EXIST - render sign up page
     return (
-    <div className="bg-[#ffffff] dark:bg-gray-800 w-screen min-h-screen overflow-hidden">
-        <Banner/>
-        <div className='bg-[#101c26] min-h-screen'>
+        <div className='bg-[#101c26] min-h-screen overflow-auto'>
+          <Banner/>
             <section className='py-2'>
                 <div className='max-w-lg mx-auto p-4 md:p-16 xl:p-20'>
                     <div className='lg:w-2/3 space-y-5 text-center mx-auto'>
@@ -134,7 +133,6 @@ function Signup() {
                 </div>
             </section>
         </div>
-    </div>
     );
 }
 

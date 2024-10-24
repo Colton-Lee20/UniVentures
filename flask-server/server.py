@@ -128,7 +128,7 @@ def signup():
             if new_user:
                 print(new_user)
                 session['user_id'] = new_user['id']  # Set the session variable
-                session.permanent = True  # Make the session permanent
+                session.permanent = True
                 return jsonify({"message": "Account created successfully!"}), 201
             else:
                 return jsonify({"message": "Failed to retrieve the newly created account."}), 500
@@ -151,7 +151,7 @@ def check_login():
 
 
 
-
+# GET ACCOUNT DATA
 @app.route('/api/account', methods=['GET'])
 def get_account_info():
     
@@ -183,12 +183,28 @@ def get_account_info():
         db.close()
 
 
+
+#LOGOUT ROUTE
+@app.route('/api/auth/logout', methods=['POST'])
+def logout():
+    session.clear()
+    response = make_response(jsonify({'message': 'Logout successful'}))
+    response.set_cookie('session', '', expires=0)
+    return response, 200
+
+
+
+
+
 #Search Schools
 @app.route('/api/schools', methods=['GET'])
 def search_schools():
     query = request.args.get('query')
     schools = get_schools(query)  # Function to query the database
     return jsonify(schools)
+
+
+
 
 
 # Get school details by ID

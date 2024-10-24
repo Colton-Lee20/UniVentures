@@ -41,6 +41,17 @@ function Account() {
     return <Navigate to="/login" replace />;
   }
 
+  //LOGOUT BUTTON
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post('/api/auth/logout');
+      if (response.status === 200)
+        window.location.href = '/'
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   // LOGGED IN - ACCOUNT PAGE
   return (
     <div className="bg-[#101c26] dark:bg-gray-900 min-h-screen text-white">
@@ -61,6 +72,7 @@ function Account() {
               </div>
               <button
                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                onClick={handleLogout}
               >
                 Log Out
               </button>

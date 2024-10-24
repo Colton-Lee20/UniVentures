@@ -21,7 +21,7 @@ const RenderBanner = () => {
           <ul className='hidden md:flex items-center space-x-5'>
             <li><Link to="/about">About</Link></li>
             <li><Link to="/contact">Contact</Link></li>
-            <li><Link to="/account">Account</Link></li>
+            <li><Link to="/login">Account</Link></li>
           </ul>
 
           {/*Hamburger Menu*/}

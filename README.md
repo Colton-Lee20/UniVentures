@@ -5,6 +5,23 @@ pip install mysql-connector-python
 
 -----------------------------------------------------------------
 
+DATABASE
+users
+    accounts
+        id        int            pk,nn,uq,ai
+        email     varchar(255)   nn, uq
+        password  varchar(255)   nn
+        firstName varchar(255)
+        lastName  varchar(255)
+
+schools
+    names
+        id            int            pk, nn, uq, ai
+        school_name   varchar(255)   nn, uq
+        
+
+-----------------------------------------------------------------
+
 HOW TO GIT
 1. git checkout -b updated-branch
 2. git add B:\UniVentures\client\src\Banner.js
@@ -14,8 +31,9 @@ HOW TO GIT
 4. git push origin updated-branch
 5. PULL REQUEST ON GITHUB
 6. MERGE WITH MAIN ON GITHUB
-7. git pull origin main
-8. git checkout -b new-branch
+7. git checkout main
+8. git pull origin main
+9. git checkout -b new-branch
 
 
 can now start working on new-branch and repeat

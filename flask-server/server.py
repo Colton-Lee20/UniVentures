@@ -169,7 +169,7 @@ def get_account_info():
     cursor = db.cursor(dictionary=True)
     
     try:
-        query = "SELECT id, email FROM accounts WHERE id = %s"
+        query = "SELECT email, firstName, lastName FROM accounts WHERE id = %s"
         cursor.execute(query, (user_id,))
         user_info = cursor.fetchone()
         
@@ -181,6 +181,55 @@ def get_account_info():
     finally:
         cursor.close()
         db.close()
+
+
+
+
+
+
+
+# UPDATE ACCOUNT DATA
+@app.route('/api/account', methods=['POST'])
+def update_account_info():
+    # NOT LOGGED IN
+    if 'user_id' not in session:
+        return jsonify({"message": "User not logged in"}), 401
+
+    user_id = session['user_id']
+    data = request.get_json()
+
+    # Validate input
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    if not first_name or not last_name:
+        return jsonify({"message": "First and last name are required"}), 400
+
+    # Connect to the database
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="CSC450-UniVentures",
+        database="users"
+    )
+    cursor = db.cursor()
+
+    try:
+        # Update the user's first and last name in the database
+        query = "UPDATE accounts SET firstName = %s, lastName = %s WHERE id = %s"
+        cursor.execute(query, (first_name, last_name, user_id))
+        db.commit()
+
+        return jsonify({"message": "Account updated successfully"}), 200
+
+    finally:
+        cursor.close()
+        db.close()
+
+
+
+
+
+
 
 
 

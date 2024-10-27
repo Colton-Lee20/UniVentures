@@ -18,6 +18,16 @@ schools
     names
         id            int            pk, nn, uq, ai
         school_name   varchar(255)   nn, uq
+
+    locations
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        school_id INT,  -- Foreign key to link the location to a specific school
+        name VARCHAR(255),
+        description TEXT,
+        image_url VARCHAR(255),
+        address VARCHAR(255),
+        FOREIGN KEY (school_id) REFERENCES schools(id) 
+
         
 
 -----------------------------------------------------------------

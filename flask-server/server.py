@@ -285,6 +285,25 @@ def get_school_by_id(school_id):
             connection.close()
 
 
+# Set up the database connection
+db_connection = mysql.connector.connect(
+    host='localhost',            
+    database='schools',  
+    user='root',       
+    password='CSC450-UniVentures' 
+)
+
+#fetch locations from database
+@app.route('/api/school/<int:school_id>/locations', methods=['GET'])
+def get_school_locations(school_id):
+    cursor = db_connection.cursor(dictionary=True)
+    query = "SELECT * FROM locations WHERE school_id = %s"
+    cursor.execute(query, (school_id,))
+    locations = cursor.fetchall()
+    cursor.close()
+    return jsonify(locations)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 

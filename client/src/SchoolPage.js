@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import Banner from './Banner';
+import LocationPreview from './LocationPreview';
 
 const SchoolDetail = () => {
     const { schoolID } = useParams();
     const [school, setSchool] = useState(null);
+    const [locations, setLocations] = useState([]);
 
     useEffect(() => {
         const fetchSchoolDetails = async () => {
@@ -19,6 +21,20 @@ const SchoolDetail = () => {
         };
 
         fetchSchoolDetails(); // Call the function when the component mounts
+    }, [schoolID]);
+
+    useEffect(() => {
+        const fetchLocations = async () => {
+            try {
+                const response = await fetch(`/api/school/${schoolID}/locations`); // Fetch locations
+                const data = await response.json();
+                setLocations(data); // Update locations state
+            } catch (error) {
+                console.error('Error fetching locations:', error);
+            }
+        };
+
+        fetchLocations(); // Call the function when the component mounts
     }, [schoolID]);
 
     if (!school) return <div>Loading...</div>; 
@@ -55,7 +71,13 @@ const SchoolDetail = () => {
                         </li>
                     </ul>
                 </nav>
-                <div>
+                {/* Places Previews */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {locations.map((location) => (
+                        <LocationPreview key={location.id} location={location} />
+                    ))}
+                </div>
+                <div className="mt-8">
                     <Outlet />
                 </div>
             </div>

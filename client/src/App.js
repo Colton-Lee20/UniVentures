@@ -28,14 +28,18 @@ function App() {
           <Route path='/Signup' element={< Signup />}></Route>
           <Route path='/Account/*' element={< Account />}></Route>
           <Route path='*' element={< NotFoundPage />}></Route>
-          <Route path="/school/:schoolID" element={<SchoolDetail />} /> 
-                    <Route path="restaurant" element={<Restaurant />} />
-                    <Route path="stores" element={<Stores />} />
-                    <Route path="activities" element={<Activities />} />
-                    <Route path="clubs" element={<Clubs />} />
-        </Routes>
+
+
+
+
+          <Route path="/school/:schoolID" element={<SchoolDetail />}>
+            <Route path="restaurant" element={<Restaurant />} />
+            <Route path="stores" element={<Stores />} />
+            <Route path="activities" element={<Activities />} />
+            <Route path="clubs" element={<Clubs />} />
+          </Route>
+          </Routes>
     </Router>
-    
   );
 }
 

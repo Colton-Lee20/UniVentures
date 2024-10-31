@@ -164,7 +164,7 @@ function Signup() {
                                 {<p className="error font-bold text-red-500 h-3">{error}</p>}
                               </div>
                               <span className="cursor-default text-white mt-16">
-                                Already have an account? <a href="/login" className="text-red-400">Sign up</a>
+                                Already have an account? <a href="/login" className="text-red-400">Login</a>
                               </span>
                             </div>
                           </div>

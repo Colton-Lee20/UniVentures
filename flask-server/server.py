@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 from SchoolDB import get_schools
 from mysql.connector import Error
+import requests     #can remove if no one needs to fill their university database anymore
 
 
 app = Flask(__name__)
@@ -302,6 +303,44 @@ def get_school_locations(school_id):
     locations = cursor.fetchall()
     cursor.close()
     return jsonify(locations)
+
+
+
+
+
+
+#PURGE AND REFILL your names table!
+# This function grabs all universities from
+# http://universities.hipolabs.com/ API
+# filtered to United States
+def insert_school_data(name, domain):
+    cursor = db_connection.cursor()
+    query = "INSERT INTO names (school_name, domain) VALUES (%s, %s)"
+    cursor.execute(query, (name, domain))
+    db_connection.commit()
+    cursor.close()
+    
+@app.route('/api/supersecretfunction', methods=['GET'])
+def purge_and_refill():
+
+    #purge names table
+
+
+    #get api data
+    url = "http://universities.hipolabs.com/search?country=united%20states"
+    response = requests.get(url)
+    data = response.json()
+
+    #iterate data
+    for uni in data:
+        name = uni["name"]
+        domain = uni["domains"][0]
+        insert_school_data(name, domain)
+
+    return jsonify({"message": "Data fetched and stored successfully!"})
+    
+
+    
 
 
 if __name__ == "__main__":

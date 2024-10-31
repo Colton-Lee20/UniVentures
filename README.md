@@ -17,7 +17,8 @@ users
 schools
     names
         id            int            pk, nn, uq, ai
-        school_name   varchar(255)   nn, uq
+        school_name   varchar(255)   nn
+        domain        varchar(255)   
 
     locations
         id INT PRIMARY KEY AUTO_INCREMENT,

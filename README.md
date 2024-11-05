@@ -53,7 +53,11 @@ can now start working on new-branch and repeat
 
 ------------------------------------------------------------------
 
-KNOWN ISSUES
+Linking school won't work unless register new account. or manually add school in database
+
+What if the activities page went by domain rather than id in database? (.../adventures/missouristate.edu)
+
+KNOWN ISSUES - actually not issue
 Duplicate API requests:
     <React.StrictMode> in index.js causes everything to be rendered twice
-    
+    Solution: delete that line of code for production; good for testing

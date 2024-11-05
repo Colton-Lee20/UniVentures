@@ -6,38 +6,58 @@ import Banner from './Banner';
 function Account() {
   const [loading, setLoading] = useState(true);           // Don't load until cookie checked
   const [isLoggedIn, setIsLoggedIn] = useState(false);    // Logged in boolean
-  const [userInfo, setUserInfo] = useState(null);         // Account info
+  const [userInfo, setUserInfo] = useState(null); 
   const [error, setError] = useState('');                 // Error to display if no account
   const [firstName, setFirstName] = useState(userInfo?.firstName || '');
   const [lastName, setLastName] = useState(userInfo?.lastName || '');
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState('');
-
+  const [schoolPlaceholder, setSchoolPlaceholder] = useState('');
+  const [schoolImageURL, setSchoolImageURL] = useState('');
 
 
   // GET LOGIN COOKIE
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get('/api/auth/check-login'); // API call
+        const response = await axios.get('/api/auth/check-login');
         
-        // LOGGED IN
         if (response.data.isLoggedIn) {
           setIsLoggedIn(true);
           const userResponse = await axios.get('/api/account');
+
           setUserInfo(userResponse.data);
           setFirstName(userResponse.data.firstName);
           setLastName(userResponse.data.lastName);
+          localStorage.setItem('userInfo', JSON.stringify(userResponse.data)); // Store user info in local storage
         }
       } catch (error) {
         console.error('Error checking login status:', error);
         setError(error.response?.data?.message || 'Something went wrong getting account information');
       } finally {
-        setLoading(false); // Done checking for cookie
+        setLoading(false);
       }
     };
     checkLoginStatus();
   }, []);
+
+  // Update schoolPlaceholder after userInfo is set
+  useEffect(() => {
+    if (userInfo) {
+      setSchoolPlaceholder(
+        userInfo.schoolName || "School with your email is not in the system. Please contact us to add it!"
+      );
+    }
+  }, [userInfo]);
+
+  //LOAD SCHOOL PIC
+  useEffect(() => {
+      if (userInfo?.email) {
+        const domain = userInfo.email.split('@')[1];
+        const logoURL = `https://logo.clearbit.com/${domain}`;
+        setSchoolImageURL(logoURL);
+      }
+  }, [userInfo]);
 
   // DONT MOVE DOWN TO LOGIN OR ACCOUNT PAGE YET - need to check if logged in already
   if (loading) {
@@ -53,8 +73,10 @@ function Account() {
   const handleLogout = async () => {
     try {
       const response = await axios.post('/api/auth/logout');
-      if (response.status === 200)
+      if (response.status === 200) {
+        localStorage.removeItem('userInfo');  //remove local storage
         window.location.href = '/'
+      }
     } catch (error) {
       console.error('Error logging out:', error);
     }
@@ -75,6 +97,7 @@ function Account() {
       if (response.status === 200) {
         userInfo.firstName = firstName;   //set original database vars to new database vars
         userInfo.lastName = lastName;     //so if handleSave() with no change it doesnt make request
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));         //IMPORTANT: update local storage names for changes
         setMessage("Your account has been updated successfully!");
         setIsEditing(false);
       }
@@ -87,6 +110,7 @@ function Account() {
   const handleEmail = () => {
     window.location.href = '/changeemailaddress'
   };
+
 
   // LOGGED IN - ACCOUNT PAGE
   return (
@@ -101,12 +125,30 @@ function Account() {
           {userInfo ? (
             <div className="">
               <div className="flex flex-col items-center">
-                <h1 className="text-4xl font-bold mb-16">Your Account</h1>
+                <h1 className="text-4xl font-bold mb-8 cursor-default">Your Account</h1>
               </div>
               
             {/* Main Box */}
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-center max-w-lg">
+
+                {/* User's School */}
+                <div className="flex items-center justify-center max-w-lg w-full mb-4 cursor-default">
+                  {/* School Icon */}
+                  {schoolImageURL && (
+                    <img
+                      src={schoolImageURL}
+                      alt="School Logo"
+                      className="w-8 h-8 mr-2 mb-1"
+                      onError={(e) => e.target.style.display = 'none'} // Hide if image fails to load
+                    />
+                  )}
+
+                  {/* School Placeholder Text */}
+                  <p className="text-sm font-medium">{schoolPlaceholder}</p>
+
+
+                </div>
 
                 {/*FirstName LastName Edit */}
                 <div className="flex space-x-4 mb-4 w-full">
@@ -136,7 +178,7 @@ function Account() {
                     {isEditing ? (
                       <button
                         onClick={handleSave}
-                        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                        className="bg-teal-500 text-white font-bold py-2 px-4 rounded"
                       >
                         Save
                       </button>
@@ -146,7 +188,7 @@ function Account() {
                           setIsEditing(true)
                           setMessage();
                         }}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                        className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded"
                       >
                         Edit
                       </button>
@@ -169,7 +211,7 @@ function Account() {
                   <div className="flex space-x-2">
                       <button
                         onClick={handleEmail}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                        className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded"
                       >
                         Change
                       </button>
@@ -178,7 +220,7 @@ function Account() {
 
                 {/*Logout */}
                 <button
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                  className="bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
                   onClick={handleLogout}
                 >
                   Log Out

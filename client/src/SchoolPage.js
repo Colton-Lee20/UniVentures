@@ -8,6 +8,8 @@ const SchoolDetail = () => {
     const { schoolID } = useParams();
     const [school, setSchool] = useState(null);
     const [locations, setLocations] = useState([]);
+    const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('userInfo')));  // Initialize with localStorage data
+    const [schoolImageURL, setSchoolImageURL] = useState('');
 
     useEffect(() => {
         const fetchSchoolDetails = async () => {
@@ -15,6 +17,14 @@ const SchoolDetail = () => {
                 const response = await axios.get(`/api/schools/${schoolID}`); // Fetch school details
                 console.log(response.data);
                 setSchool(response.data); // Update state with fetched data
+
+                //LOAD SCHOOL PIC
+                if (response?.data?.domain) {
+                    const domain = response.data.domain;
+                    const logoURL = `https://logo.clearbit.com/${domain}`;
+                    setSchoolImageURL(logoURL);
+                }
+
             } catch (error) {
                 console.error('Error fetching school details:', error); // Log any error
             }
@@ -44,7 +54,18 @@ const SchoolDetail = () => {
             <Banner/>
     
             <div className="p-4">
+                <div className="flex items-center mb-4">
+                {schoolImageURL && (
+                    <img
+                      src={schoolImageURL}
+                      alt="School Logo"
+                      className="w-8 h-8 mr-2"
+                      onError={(e) => e.target.style.display = 'none'} // Hide if image fails to load
+                    />
+                )}
+
                 <h1 className="text-2xl font-bold">{school.school_name}</h1>
+            </div>
             
                 {/* Add more school details here */}
                 <nav>

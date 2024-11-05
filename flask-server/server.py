@@ -118,8 +118,20 @@ def signup():
         else:
             #HASH INPUT PASSWORD AND INSERT INTO DB
             hashed_password = generate_password_hash(password)
-            query = "INSERT INTO accounts (email, password) VALUES (%s, %s)"
-            cursor.execute(query, (email, hashed_password))
+            
+            #TRY TO GET UNIVERSITY FOR ACCOUNT
+            domain = email.split('@')[1]
+            response = get_school_by_domain(domain)
+            #school is found
+            if response:
+                response_json = response.get_json()
+                query = "INSERT INTO accounts (email, password, schoolId, schoolName) VALUES (%s, %s, %s, %s)"
+                cursor.execute(query, (email, hashed_password, response_json[0], response_json[1]))
+            #school is not found
+            else:
+                query = "INSERT INTO accounts (email, password) VALUES (%s, %s)"
+                cursor.execute(query, (email, hashed_password))
+
             db.commit()
 
             #GET SESSION ID AND CREATE SESSION
@@ -130,14 +142,14 @@ def signup():
                 print(new_user)
                 session['user_id'] = new_user['id']  # Set the session variable
                 session.permanent = True
+
                 return jsonify({"message": "Account created successfully!"}), 201
             else:
                 return jsonify({"message": "Failed to retrieve the newly created account."}), 500
+            
     finally:
         cursor.close()
         db.close()
-
-
 
 
 
@@ -170,7 +182,7 @@ def get_account_info():
     cursor = db.cursor(dictionary=True)
     
     try:
-        query = "SELECT email, firstName, lastName FROM accounts WHERE id = %s"
+        query = "SELECT email, firstName, lastName, schoolName, schoolId FROM accounts WHERE id = %s"
         cursor.execute(query, (user_id,))
         user_info = cursor.fetchone()
         
@@ -305,6 +317,27 @@ def get_school_locations(school_id):
     return jsonify(locations)
 
 
+
+#GET SCHOOL BY DOMAIN - for signup route
+@app.route('/api/schools/<string:domain>', methods=['GET'])
+def get_school_by_domain(domain):
+    try:
+        if db_connection.is_connected():
+            cursor = db_connection.cursor()
+            cursor.execute("SELECT id, school_name FROM names WHERE domain = %s", (domain,))
+            school = cursor.fetchone()  # Fetch the school details
+
+            if school:
+                return jsonify(school)  # Return the school data in JSON format
+            else:
+                return jsonify({'error': 'School not found'}), 404  # Return 404 if not found
+    except Error as e:
+        print(f"Error: {e}")
+        return jsonify({'error': 'Internal Server Error'}), 500  # Handle errors
+    finally:
+        if db_connection.is_connected():
+            cursor.close()
+            db_connection.close()
 
 
 

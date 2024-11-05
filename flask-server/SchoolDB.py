@@ -14,7 +14,7 @@ def get_schools(query):
         if connection.is_connected():
             cursor = connection.cursor(dictionary=True)  # Use dictionary for easier access
             # Use a parameterized query to prevent SQL injection
-            cursor.execute("SELECT * FROM names WHERE school_name LIKE %s", ('%' + query + '%',))
+            cursor.execute("SELECT * FROM names WHERE school_name LIKE %s ORDER BY school_name ASC", ('%' + query + '%',))
             schools = cursor.fetchall()  # Fetch all results
 
             return schools

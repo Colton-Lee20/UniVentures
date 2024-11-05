@@ -13,6 +13,8 @@ users
         password  varchar(255)   nn
         firstName varchar(255)
         lastName  varchar(255)
+        schoolName varchar(255)
+        schoolId  int
 
 schools
     names

@@ -47,7 +47,7 @@ function Contact() {
                         <h1 className='text-white uppercase tracking-wides font-medium text-4xl'>
                             Get in touch
                         </h1>
-                        <div className='h-0.5 bg-red-500 w-14 mx-auto'></div>
+                        <div className='h-0.5 bg-teal-700 w-14 mx-auto'></div>
                         <p className='text-gray-300 text-base leading-6'>
                             We'd love to hear from you!
                         </p>
@@ -107,7 +107,7 @@ function Contact() {
                                             type='submit'
                                             id='submit'
                                             name='send'
-                                            className='inline-block px-15 py-2.5 px-2.5 rounded text-sm cursor-pointer select-none outline-none transition-all duration-500 focus:ring-offset-0 hover:-translate-y-1.5 bg-red-500 text-white'
+                                            className='bg-teal-700 inline-block px-15 py-2.5 px-2.5 rounded text-sm cursor-pointer select-none outline-none transition-all duration-500 focus:ring-offset-0 hover:-translate-y-1.5 bg-red-500 text-white'
                                             value='Send Message'
                                             />
                                         </div>

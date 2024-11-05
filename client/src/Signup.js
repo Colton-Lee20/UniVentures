@@ -95,6 +95,8 @@ function Signup() {
         }
     };
 
+    
+
 
     // DONT MOVE DOWN - need to check if cookie exists
     if (loading) {
@@ -116,7 +118,7 @@ function Signup() {
                         <h1 className='text-white uppercase tracking-wides font-medium text-4xl cursor-default'>
                             Create an account
                         </h1>
-                        <div className='h-0.5 bg-red-500 w-14 mx-auto'></div>
+                        <div className='h-0.5 bg-teal-700 w-14 mx-auto'></div>
                     </div>
                     <div className='flex justify-center'>
                       <div className='grid grid-cols-1 gap-6 mt-10'>
@@ -152,7 +154,7 @@ function Signup() {
                                   />
                                 </div>
                                 <div className='flex justify-end w-full'>
-                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded ml-auto">
+                                <button type="submit" class="bg-teal-700 hover:bg-teal-600 text-white font-bold py-1 px-3 rounded ml-auto">
                                   Sign up
                                 </button>
                                 </div>

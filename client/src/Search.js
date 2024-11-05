@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
     const [query, setQuery] = useState('');
     const [schools, setSchools] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (storedUserInfo && storedUserInfo.schoolId) {
+            setIsLoggedIn(true);
+        }
+      }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -21,9 +29,16 @@ const SearchBar = () => {
         navigate(`/school/${schoolID}`);
     };
 
+    const handleMySchoolClick = () => {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (userInfo && userInfo.schoolId) {
+            navigate(`/school/${userInfo.schoolId}`);
+        }
+    };
+
 
     return (
-        <main className='flex flex-col h-screen w-screen items-center justify-start bg-[#101c26]'>
+        <div className='flex flex-col items-center justify-start bg-[#101c26]'>
             <div className='text-white font-serif text-5xl mb-4 pt-40'>
                 UniVentures
             </div>
@@ -38,31 +53,42 @@ const SearchBar = () => {
                         onChange={(e) => setQuery(e.target.value)}  // Update query state
                         className='w-full border-none bg-transparent px-4 py-1 text-gray-900 outline-none focus:outline-none'
                         />
-                        <button className='m-2 rounded bg-teal-800 px-4 py-2 text-white' type='submit'>
+                        <button className='m-2 rounded bg-teal-700 px-4 py-2 text-white' type='submit'>
                             Search
                         </button>
                     </form>
                 </div>
                 {/* Display search results */}
-                <div className='mt-4 w-96 h-20'>
+                <div className='mt-4 w-96'>
                     <ul className='bg-white rounded shadow-lg max-h-60 overflow-y-auto'>
-                        {schools.length > 0 ? (
-                            schools.map((school) => (
-                                <li
-                                    key={school.id}
-                                    onClick={() => handleSchoolClick(school.id)}  // Navigate on click
-                                    className='cursor-pointer hover:bg-gray-200 p-2'
-                                >
-                                    {school.school_name}
-                                </li>
-                            ))
-                        ) : (
-                            <li className='p-2 text-gray-500'>No results found</li>
-                        )}
+                            {query.length > 0 && schools.length === 0 ? (  // Check if query is not empty and schools is empty
+                                    <li className='p-2 text-gray-500'>No results found</li>
+                                ) : null}
+                                {schools.length > 0 && schools.map((school) => (
+                                    <li
+                                        key={school.id}
+                                        onClick={() => handleSchoolClick(school.id)}  // Navigate on click
+                                        className='cursor-pointer hover:bg-gray-200 p-2'
+                                    >
+                                        {school.school_name}
+                                    </li>
+                            ))}
                     </ul>
                 </div>
+
+                {/* User's School Button */}
+                {isLoggedIn && (<div className="flex justify-center mt-4">
+                    <button
+                        className="rounded bg-teal-700 hover:bg-teal-600 px-4 py-2 text-white"
+                        onClick={handleMySchoolClick}
+                    >
+                    My School
+                    </button>
+                </div>
+                )}
+
             </div>
-        </main>   
+        </div>   
     );
 
 };

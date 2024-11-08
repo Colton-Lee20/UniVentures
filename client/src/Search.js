@@ -42,7 +42,7 @@ const SearchBar = () => {
             <div className='text-white font-serif text-5xl mb-4 pt-40'>
                 UniVentures
             </div>
-            <div>
+        <div>
                 <div className='flex w-96 rounded bg-white'>
                     <form onSubmit={handleSearch} className='flex w-full'>
                         <input

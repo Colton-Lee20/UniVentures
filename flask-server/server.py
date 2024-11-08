@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 from SchoolDB import get_schools
 from mysql.connector import Error
-import requests     #can remove if no one needs to fill their university database anymore
+     #import requests // can remove if no one needs to fill their university database anymore
 
 
 app = Flask(__name__)

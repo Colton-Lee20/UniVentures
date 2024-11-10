@@ -16,10 +16,12 @@ import Stores from './Stores';
 import Activities from './Activities';
 import Clubs from './Clubs';
 import RenderBanner from './RenderBanner';
+import { AuthProvider } from './AuthContext';
+
 
 function App() {
   return (
-    
+    <AuthProvider>
     <Router>
         <Routes>
           <Route path="/" element={<MainPage />} />
@@ -41,6 +43,7 @@ function App() {
           </Route>
           </Routes>
     </Router>
+    </AuthProvider>
   );
 }
 

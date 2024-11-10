@@ -31,7 +31,30 @@ schools
         address VARCHAR(255),
         FOREIGN KEY (school_id) REFERENCES schools(id) 
 
-        
+
+
+CREATE TABLE `users`.`accounts` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `firstName` VARCHAR(255) NULL,
+  `lastName` VARCHAR(255) NULL,
+  `schoolName` VARCHAR(255) NULL,
+  `schoolID` INT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
+
+CREATE TABLE `schools`.`names` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `school_name` VARCHAR(255) NOT NULL,
+  `domain` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
+
+
+
+
 
 -----------------------------------------------------------------
 

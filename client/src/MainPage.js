@@ -31,14 +31,15 @@ function MainPage() {
 
               {/* Email sign-up form, very close to the tagline */}
               <div className="mt-">
-                  <EmailSignUp />
+                  <SearchBar/>
+
 
       {/* My thoughts with EmailSignUp is I want them to go to another "create an account" page
         where they can select school and all the other info we need
         (This is also how netflix does it you want it to be as simple as possible for the first move'
         for user retention) - Marc*/}
 
-        
+
               </div>
           </div>
       </div>

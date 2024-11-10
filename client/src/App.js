@@ -15,6 +15,7 @@ import Restaurant from './Restaurant';
 import Stores from './Stores';
 import Activities from './Activities';
 import Clubs from './Clubs';
+import RenderBanner from './RenderBanner';
 
 function App() {
   return (

@@ -14,7 +14,7 @@ const RenderLoginBanner = () => {
             {/* Adding the Sign In button */}
             <li>
               <Link
-                to="/signin"
+                to="/login"
                 className="bg-white text-black py-2 px-4 rounded-full hover:bg-gray-200 transition-colors"
                 style={{ fontWeight: 'bold' }}
               >

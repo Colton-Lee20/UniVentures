@@ -38,12 +38,9 @@ const SearchBar = () => {
 
 
     return (
-        <div className='flex flex-col items-center justify-start bg-[#101c26]'>
-            <div className='text-white font-serif text-5xl mb-4 pt-40'>
-                UniVentures
-            </div>
+        <div className='flex flex-col items-center justify-start bg-[#101c26] mt-8'>
         <div>
-                <div className='flex w-96 rounded bg-white'>
+                <div className='flex w-96 rounded-full bg-white'>
                     <form onSubmit={handleSearch} className='flex w-full'>
                         <input
                         type='search'
@@ -53,7 +50,7 @@ const SearchBar = () => {
                         onChange={(e) => setQuery(e.target.value)}  // Update query state
                         className='w-full border-none bg-transparent px-4 py-1 text-gray-900 outline-none focus:outline-none'
                         />
-                        <button className='m-2 rounded bg-teal-700 px-4 py-2 text-white' type='submit'>
+                        <button className='m-2 rounded-full bg-teal-700 px-5 py-3 text-white whitespace-nowrap' type='submit'>
                             Search
                         </button>
                     </form>

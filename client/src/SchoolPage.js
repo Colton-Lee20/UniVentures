@@ -65,9 +65,15 @@ const SchoolDetail = () => {
                 )}
 
                 <h1 className="text-2xl font-bold">{school.school_name}</h1>
+        
             </div>
             
                 {/* Add more school details here */}
+                <div className='flex justify-end w-full'>
+                        <button type="submit" className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-1 px-3 rounded ml-auto">
+                          Add Adventure
+                        </button>
+                </div>
                 <nav>
                     <ul className="flex space-x-6 justify-center mb-6">
                         <li>
@@ -92,6 +98,7 @@ const SchoolDetail = () => {
                         </li>
                     </ul>
                 </nav>
+                
                 {/* Places Previews */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {locations.map((location) => (
@@ -101,6 +108,7 @@ const SchoolDetail = () => {
                 <div className="mt-8">
                     <Outlet />
                 </div>
+            
             </div>
         </main>
     );

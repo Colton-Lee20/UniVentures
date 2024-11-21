@@ -1,11 +1,11 @@
-from flask import Flask, jsonify, request, make_response, session
+from flask import Flask, jsonify, request, make_response, session, g
 from flask_cors import CORS  
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 from SchoolDB import get_schools
 from mysql.connector import Error
-     #import requests // can remove if no one needs to fill their university database anymore
+import requests                        # can remove if no one needs to fill their university database anymore
 
 
 app = Flask(__name__)
@@ -20,25 +20,61 @@ CORS(app, supports_credentials=True)
 
 
 
-# GET USERS ROUTE
-@app.route('/users', methods=['GET'])
-def get_data():
-    # Configure MySQL connection
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",   
-        password="CSC450-UniVentures",
-        database="users"
-    )
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM accounts")
-    result = cursor.fetchall()
-    return jsonify(result)
+#
+#   THE FOLLOWING CONNECTIONS ARE USED THROUGHOUT THE BACKEND
+#   TO CONNECT TO THE DATABASES AND KEEP A PERSISTENT CONNECTION
+#   info on flask.g: https://www.geeksforgeeks.org/when-should-flask-g-be-used/
+#
+
+#Connection to USERS database
+def get_db_connection_users():
+    if 'db_connection_users' not in g:
+        g.db_connection_users = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="CSC450-UniVentures",
+            database="users",
+        )
+    return g.db_connection_users
+
+#Connection to SCHOOLS database
+def get_db_connection_schools():
+    if 'db_connection_schools' not in g:
+        g.db_connection_schools = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="CSC450-UniVentures",
+            database="schools",
+        )
+    return g.db_connection_schools
+
+#Close Connection - USERS
+@app.teardown_appcontext
+def close_db_connection_users(exception=None):
+    db_connection_users = g.pop('db_connection_users', None)
+    if db_connection_users is not None:
+        db_connection_users.close()
+
+#Close Connection - SCHOOLS
+@app.teardown_appcontext
+def close_db_connection_schools(exception=None):
+    db_connection_schools = g.pop('db_connection_schools', None)
+    if db_connection_schools is not None:
+        db_connection_schools.close()
 
 
 
 
 
+
+#
+#
+#   ACCOUNT ROUTES 
+#   INCLUDES login, signup, check if logged in
+#            get account data, update account data, 
+#            logout
+#
+#
 
 
 # LOGIN ROUTE
@@ -49,15 +85,11 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
-    # CHECK INPUT WITH DATABASE
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="CSC450-UniVentures",
-        database="users"
-    )
+    # GET DATABASE CONNECTION
+    db = get_db_connection_users()
     cursor = db.cursor(dictionary=True)                 # Makes the row return as a dictionary!
 
+    #CHECK INPUT WITH DATABASE
     try:
         query = "SELECT * FROM accounts WHERE email = %s"   # Parameterized query! (Safe from SQL injection)
         cursor.execute(query, (email,))
@@ -82,11 +114,6 @@ def login():
             return jsonify({"message": "Account associated with that email does not exist"}), 404
     finally:
         cursor.close()
-        db.close()
-
-
-
-
 
 
 
@@ -99,12 +126,7 @@ def signup():
     password = data.get('password')
     
     # CONNECT TO DATABASE
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="CSC450-UniVentures",
-        database="users"
-    )
+    db = get_db_connection_users()
     cursor = db.cursor(dictionary=True)
 
     try:
@@ -149,7 +171,6 @@ def signup():
             
     finally:
         cursor.close()
-        db.close()
 
 
 
@@ -173,12 +194,7 @@ def get_account_info():
         return jsonify({"message": "User not logged in"}), 401
     
     user_id = session['user_id']
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="CSC450-UniVentures",
-        database="users"
-    )
+    db = get_db_connection_users()
     cursor = db.cursor(dictionary=True)
     
     try:
@@ -193,11 +209,6 @@ def get_account_info():
             
     finally:
         cursor.close()
-        db.close()
-
-
-
-
 
 
 
@@ -218,12 +229,7 @@ def update_account_info():
         return jsonify({"message": "First and last name are required"}), 400
 
     # Connect to the database
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="CSC450-UniVentures",
-        database="users"
-    )
+    db = get_db_connection_users()
     cursor = db.cursor()
 
     try:
@@ -236,13 +242,6 @@ def update_account_info():
 
     finally:
         cursor.close()
-        db.close()
-
-
-
-
-
-
 
 
 
@@ -255,6 +254,15 @@ def logout():
     return response, 200
 
 
+
+
+
+#
+#
+#   SCHOOL ROUTES
+#   Includes search, get details, get specific school, and secretfunction to fill our databases!
+#
+#
 
 
 
@@ -272,16 +280,11 @@ def search_schools():
 # Get school details by ID
 @app.route('/api/schools/<int:school_id>', methods=['GET'])
 def get_school_by_id(school_id):
-    connection = mysql.connector.connect(
-        host='localhost',            
-        database='schools',  
-        user='root',       
-        password='CSC450-UniVentures'     
-    )
+    db = get_db_connection_schools()
+    cursor = db.cursor(dictionary=True)
 
     try:
-        if connection.is_connected():
-            cursor = connection.cursor(dictionary=True)
+        if db.is_connected():
             cursor.execute("SELECT * FROM names WHERE id = %s", (school_id,))
             school = cursor.fetchone()  # Fetch the school details
 
@@ -293,23 +296,14 @@ def get_school_by_id(school_id):
         print(f"Error: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500  # Handle errors
     finally:
-        if connection.is_connected():
-            cursor.close()
-            connection.close()
+        cursor.close()
 
-
-# Set up the database connection
-db_connection = mysql.connector.connect(
-    host='localhost',            
-    database='schools',  
-    user='root',       
-    password='CSC450-UniVentures' 
-)
 
 #fetch locations from database
 @app.route('/api/school/<int:school_id>/locations', methods=['GET'])
 def get_school_locations(school_id):
-    cursor = db_connection.cursor(dictionary=True)
+    db = get_db_connection_schools()
+    cursor = db.cursor(dictionary=True)
     query = "SELECT * FROM locations WHERE school_id = %s"
     cursor.execute(query, (school_id,))
     locations = cursor.fetchall()
@@ -321,23 +315,21 @@ def get_school_locations(school_id):
 #GET SCHOOL BY DOMAIN - for signup route
 @app.route('/api/schools/<string:domain>', methods=['GET'])
 def get_school_by_domain(domain):
+    db = get_db_connection_schools()
+    cursor = db.cursor()
     try:
-        if db_connection.is_connected():
-            cursor = db_connection.cursor()
-            cursor.execute("SELECT id, school_name FROM names WHERE domain = %s", (domain,))
-            school = cursor.fetchone()  # Fetch the school details
+        cursor.execute("SELECT id, school_name FROM names WHERE domain = %s", (domain,))
+        school = cursor.fetchone()  # Fetch the school details
 
-            if school:
-                return jsonify(school)  # Return the school data in JSON format
-            else:
-                return jsonify({'error': 'School not found'}), 404  # Return 404 if not found
+        if school:
+            return jsonify(school)  # Return the school data in JSON format
+        else:
+            return jsonify({'error': 'School not found'}), 404  # Return 404 if not found
     except Error as e:
         print(f"Error: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500  # Handle errors
     finally:
-        if db_connection.is_connected():
-            cursor.close()
-            db_connection.close()
+        cursor.close()
 
 
 
@@ -347,17 +339,18 @@ def get_school_by_domain(domain):
 # http://universities.hipolabs.com/ API
 # filtered to United States
 def insert_school_data(name, domain):
-    cursor = db_connection.cursor()
+    db = get_db_connection_schools()
+    cursor = db.cursor()
     query = "INSERT INTO names (school_name, domain) VALUES (%s, %s)"
     cursor.execute(query, (name, domain))
-    db_connection.commit()
+    db.commit()
     cursor.close()
     
 @app.route('/api/supersecretfunction', methods=['GET'])
 def purge_and_refill():
 
     #purge names table
-
+    #-------
 
     #get api data
     url = "http://universities.hipolabs.com/search?country=united%20states"

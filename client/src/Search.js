@@ -71,6 +71,7 @@ const SearchBar = () => {
                                     </li>
                             ))}
                     </ul>
+                    
                 </div>
 
                 {/* User's School Button */}

@@ -18,7 +18,7 @@ const RenderBanner = () => {
           <Link to="/"><img src={logo} alt="Logo" style={{ width: '80px', height: 'auto' }}/></Link>
           </span>
 
-          <ul className='hidden md:flex items-center space-x-5'>
+          <ul className='hidden md:flex items-center space-x-5 font-bold'>
             <li><Link to="/about">About</Link></li>
             <li><Link to="/contact">Contact</Link></li>
             <li><Link to="/account">Account</Link></li>

@@ -364,6 +364,49 @@ def purge_and_refill():
         insert_school_data(name, domain)
 
     return jsonify({"message": "Data fetched and stored successfully!"})
+
+
+#Route to add adventures to the database
+@app.route('/api/adventure', methods=['POST'])
+def add_adventure():
+     # Connect to the database
+    db = get_db_connection_schools()
+    cursor = db.cursor()
+
+    try:
+        print("Incoming request data:", request.json)
+
+        # Extract data from request body
+        data = request.json
+        school_id = data.get('school_id')
+        name = data.get('name')
+        description = data.get('description')
+        image_url = data.get('image_url')
+        address = data.get('address')
+
+        # Validate input
+        if not all([school_id, name, description, image_url, address]):
+            return jsonify({"error": "All fields are required"}), 400
+
+        # SQL query with placeholders
+        query = """
+        INSERT INTO locations (school_id, name, description, image_url, address)
+        VALUES (%s, %s, %s, %s, %s);
+        """
+        cursor.execute(query, (school_id, name, description, image_url, address))
+        db.commit()
+
+        return jsonify({"message": "Adventure added successfully"}), 200
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        cursor.close()
+        db.close()
+
+
     
 
     

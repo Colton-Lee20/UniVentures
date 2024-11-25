@@ -3,6 +3,7 @@ import { useParams, Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import Banner from './Banner';
 import LocationPreview from './LocationPreview';
+import AddAdventure from './AddAdventure';
 
 const SchoolDetail = () => {
     const { schoolID } = useParams();
@@ -10,6 +11,17 @@ const SchoolDetail = () => {
     const [locations, setLocations] = useState([]);
     const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('userInfo')));  // Initialize with localStorage data
     const [schoolImageURL, setSchoolImageURL] = useState('');
+    const [isWindowOpen, setWindowOpen] = useState(false);
+
+    const fetchLocations = async () => {
+        try {
+            const response = await fetch(`/api/school/${schoolID}/locations`); // Fetch locations
+            const data = await response.json();
+            setLocations(data); // Update locations state
+        } catch (error) {
+            console.error('Error fetching locations:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchSchoolDetails = async () => {
@@ -49,6 +61,41 @@ const SchoolDetail = () => {
 
     if (!school) return <div>Loading...</div>; 
 
+    const toggleWindow = () => setWindowOpen(!isWindowOpen);
+
+    const handleAddAdventure = async (event) => {
+        event.preventDefault();
+    
+        const formData = {
+            school_id: schoolID,
+            name: event.target.adventureName.value,
+            description: event.target.description.value,
+            image_url: event.target.imageUrl.value, // Matches updated id
+            address: event.target.address.value,
+        };
+    
+        try {
+            const response = await fetch('/api/adventure', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+    
+            if (response.ok) {
+                toggleWindow();
+                fetchLocations(); // Refresh the displayed list of locations
+            } else {
+                const errorData = await response.json();
+                alert(`Error adding adventure: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error adding adventure:', error);
+            alert('Error adding adventure');
+        }
+    };
+
     return (
         <main>
             <Banner/>
@@ -67,13 +114,13 @@ const SchoolDetail = () => {
                 <h1 className="text-4xl font-bold">{school.school_name}</h1>
         
             </div>
+            <div className='flex justify-end w-full'>
+                        <button onClick={toggleWindow} className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-1 px-3 m-3 rounded ml-auto">
+                          +
+                        </button>
+            </div>
             
                 {/* Add more school details here */}
-                <div className='flex justify-end w-full'>
-                        <button type="submit" className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-1 px-3 rounded ml-auto">
-                          Add Adventure
-                        </button>
-                </div>
                 
                 
                 {/* Main Page Div*/}
@@ -95,7 +142,17 @@ const SchoolDetail = () => {
                     </div>
                 </div>
             </div>
+            
+
+            {/* Add Adventure Window */}
+            <AddAdventure
+                isOpen={isWindowOpen}
+                toggleWindow={toggleWindow}
+                onSubmit={handleAddAdventure}
+            />
+
         </main>
+        
     );
 
 };

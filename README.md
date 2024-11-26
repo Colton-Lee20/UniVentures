@@ -3,7 +3,7 @@
 Required Installs:
 pip install mysql-connector-python
 pip install requests (for universities database function)
-
+npm install @heroicons/react
 -----------------------------------------------------------------
 
 DATABASE

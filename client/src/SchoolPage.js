@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { SunIcon, MoonIcon } from '@heroicons/react/solid';
 import { useParams, Link, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import Banner from './Banner';
@@ -12,6 +13,25 @@ const SchoolDetail = () => {
     const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem('userInfo')));  // Initialize with localStorage data
     const [schoolImageURL, setSchoolImageURL] = useState('');
     const [isWindowOpen, setWindowOpen] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
+
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+          setDarkMode(true);
+        }
+      }, []);
+    
+      const toggleDarkMode = () => {
+        setDarkMode((prev) => {
+          const newMode = !prev;
+          document.documentElement.classList.toggle('dark', newMode);
+          localStorage.setItem('theme', newMode ? 'dark' : 'light');
+          return newMode;
+        });
+      };
+    
 
     const fetchLocations = async () => {
         try {
@@ -97,64 +117,62 @@ const SchoolDetail = () => {
     };
 
     return (
-        <main>
-            <Banner/>
-    
+        <main className="bg-white dark:bg-gray-800">
+          <div className={`min-h-screen flex flex-col ${darkMode ? 'dark' : ''}`}>
+            <Banner />
             <div className="p-4">
-                <div className="flex flex-col items-center mb-4">
-                {schoolImageURL && (
-                    <img
-                      src={schoolImageURL}
-                      alt="School Logo"
-                      className="w-8 h-8 mr-2"
-                      onError={(e) => e.target.style.display = 'none'} // Hide if image fails to load
-                    />
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 rounded-md bg-gray-200 dark:bg-gray-800 flex items-center"
+              >
+                {darkMode ? (
+                  <SunIcon className="h-6 w-6 text-yellow-400" />
+                ) : (
+                  <MoonIcon className="h-6 w-6 text-gray-600" />
                 )}
-
+              </button>
+              <div className="flex flex-col items-center mb-4">
+                {schoolImageURL && (
+                  <img
+                    src={schoolImageURL}
+                    alt="School Logo"
+                    className="w-8 h-8 mr-2"
+                    onError={(e) => (e.target.style.display = 'none')}
+                  />
+                )}
                 <h1 className="text-4xl font-bold">{school.school_name}</h1>
-        
-            </div>
-            <div className='flex justify-end w-full'>
-                        <button onClick={toggleWindow} className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-1 px-3 m-3 rounded ml-auto">
-                          +
-                        </button>
-            </div>
-            
-                {/* Add more school details here */}
-                
-                
-                {/* Main Page Div*/}
-                <div className="grid grid-cols-[1fr_4fr]">
-                    {/* Sidebar */}
-                    <div className="">
-                        <h1 className="font-bold">Filters</h1>
-                        <span>should collapse on mobile</span>
-                    </div>
-
-                    {/* Places Previews */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {locations.map((location) => (
-                            <LocationPreview key={location.id} location={location} />
-                        ))}
-                    </div>
-                    <div className="mt-8">
-                        <Outlet />
-                    </div>
+              </div>
+              <div className="flex justify-end w-full">
+                <button
+                  onClick={toggleWindow}
+                  className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-1 px-3 m-3 rounded ml-auto"
+                >
+                  +
+                </button>
+              </div>
+              <div className="grid grid-cols-[1fr_4fr]">
+                <div>
+                  <h1 className="font-bold">Filters</h1>
+                  <span>should collapse on mobile</span>
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {locations.map((location) => (
+                    <LocationPreview key={location.id} location={location} />
+                  ))}
+                </div>
+                <div className="mt-8">
+                  <Outlet />
+                </div>
+              </div>
             </div>
-            
-
-            {/* Add Adventure Window */}
             <AddAdventure
-                isOpen={isWindowOpen}
-                toggleWindow={toggleWindow}
-                onSubmit={handleAddAdventure}
+              isOpen={isWindowOpen}
+              toggleWindow={toggleWindow}
+              onSubmit={handleAddAdventure}
             />
-
-        </main>
-        
-    );
-
+            </div>
+          </main>
+      );
 };
 
 export default SchoolDetail;

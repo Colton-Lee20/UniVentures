@@ -30,7 +30,10 @@ schools
         description TEXT,
         image_url VARCHAR(255),
         address VARCHAR(255),
-        FOREIGN KEY (school_id) REFERENCES schools(id) 
+        latitude double,
+        longitude double,
+        FOREIGN KEY (school_id) REFERENCES schools(id)
+
 
 
 

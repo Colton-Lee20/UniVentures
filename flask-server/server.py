@@ -406,11 +406,95 @@ def add_adventure():
         cursor.close()
         db.close()
 
+# API Code
+GOOGLE_API_KEY = "AIzaSyCJfXxE5Ax1Iut7n9zPtjsodY-R-Y4OXWE"  
 
+def get_db_connection():
+    return mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="CSC450-UniVentures",
+        database="schools"
+    )
+
+# Fetch university details
+@app.route('/api/university/<int:school_id>', methods=['GET'])
+def get_university(school_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM locations WHERE school_id = %s", (school_id,))
+    university = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return jsonify(university) if university else ({"error": "University not found"}, 404)
+
+# Fetch nearby places with photos
+@app.route('/api/nearby/<int:school_id>/<string:category>', methods=['GET'])
+def get_nearby_places(school_id, category):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT latitude, longitude FROM locations WHERE school_id = %s", (school_id,))
+    location = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if not location:
+        return jsonify({"error": "University location not found"}), 404
+
+    latitude = location['latitude']
+    longitude = location['longitude']
     
+    # Define place types for Google Places API
+    place_types = {
+        "restaurants": "restaurant",
+        "restaurant": "restaurant",
+        "activities": "tourist_attraction",
+        "clubs": "night_club",
+        "stores": "store"
+    }
+    place_type = place_types.get(category.lower())
 
+    if not place_type:
+        return jsonify({"error": "Invalid category"}), 400
+
+    # Call Google Places API
+    url = (
+        f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+        f"location={latitude},{longitude}&radius=5000&type={place_type}&key={GOOGLE_API_KEY}"
+    )
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch nearby places"}), response.status_code
+
+    # Process API response
+    places = response.json().get("results", [])
+    formatted_places = []
+
+    for place in places:
+        formatted_place = {
+            "name": place.get("name"),
+            "vicinity": place.get("vicinity"),
+            "rating": place.get("rating"),
+            "place_id": place.get("place_id"),
+            "photos": []
+        }
+
+        # Process photo references if available
+        if "photos" in place:
+            formatted_place["photos"] = [
+                {
+                    "photo_reference": photo["photo_reference"],
+                    "photo_url": f"https://maps.googleapis.com/maps/api/place/photo"
+                                 f"?maxwidth=400&photo_reference={photo['photo_reference']}&key={GOOGLE_API_KEY}"
+                }
+                for photo in place["photos"]
+            ]
+
+        formatted_places.append(formatted_place)
+
+    return jsonify(formatted_places)
     
-
 
 if __name__ == "__main__":
     app.run(debug=True)

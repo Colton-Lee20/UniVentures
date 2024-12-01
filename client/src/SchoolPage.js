@@ -5,6 +5,7 @@ import axios from 'axios';
 import Banner from './Banner';
 import LocationPreview from './LocationPreview';
 import AddAdventure from './AddAdventure';
+import StaticPlusButton from "./components/StaticPlusButton/StaticPlusButton";
 
 const SchoolDetail = () => {
   const { schoolID } = useParams();
@@ -31,6 +32,11 @@ const SchoolDetail = () => {
       return newMode;
     });
   };
+
+
+
+
+
 
   const fetchLocations = async (category) => {
     try {
@@ -175,12 +181,21 @@ const SchoolDetail = () => {
       Stores
     </NavLink>
     </nav>
-    <button
+
+
+    {/* WILL REMOVE THIS */}
+    
+    
+
+    
+    {/*<button
     onClick={toggleWindow}
     className="bg-teal-700 hover:bg-teal-600 text-white font-bold py-1 px-3 rounded ml-4"
     >
       +
       </button>
+    {/* WILL REMOVE THIS */}
+
       </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -197,10 +212,18 @@ const SchoolDetail = () => {
           toggleWindow={toggleWindow}
           onSubmit={handleAddAdventure}
         />
+
+
+        <StaticPlusButton onClick={toggleWindow} />
+
       </div>
     </main>
   );
 };
+
+
+
+
 
 export default SchoolDetail;
 

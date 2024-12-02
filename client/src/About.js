@@ -1,26 +1,60 @@
 import React from 'react';
 import './css/input.css';
 import Banner from './Banner';
-import background from './Images/About-Background.jpg'
+import { FaMapMarkerAlt, FaStar, FaRandom } from 'react-icons/fa';
 
 function About() {
     return (
-    <div className='w-screen h-screen bg-cover bg-center' style={{ backgroundImage: `url(${background})` }}>
-        <Banner/>
-            <div className='flex flex-col items-center mt-40 mx-40 px-10 py-10 rounded-2xl  bg-[#101c26]'>
-                <div className='text-white font-serif text-5xl mb-4'>UniVentures</div>
-                <h2 className='text-white text-center'>
-                Univentures is your go-to web app for discovering exciting things to do around 
-                your college campus! Whether you're looking for a new place to eat, explore, or 
-                socialize, Univentures helps you find nearby adventures tailored to your university 
-                experience. Users can discover recommended spots added by others or browse locations 
-                via Google’s Places API. You can rate, review, and even create your own adventures—after 
-                verifying your university email. For those feeling spontaneous, the “Surprise Me!” feature 
-                picks a random adventure for you. No account? No problem! You can still explore, but creating 
-                and reviewing adventures requires one. Plan your next adventure with Univentures!
-                </h2>
-            </div>
-    </div>
+        <div className="bg-[#101c26] min-h-screen overflow-x-hidden">  
+            <Banner />
+            <section className="py-16">
+                <div className="max-w-7xl mx-auto px-6 md:px-16">
+                    <div className="text-center">
+                        <h1 className="text-white font-bold uppercase text-5xl">Discover UniVentures</h1>
+                        <p className="text-gray-400 mt-4 text-lg">
+                            Your gateway to exciting campus adventures, hand-picked and tailored just for you.
+                        </p>
+                        <div className="h-0.5 bg-teal-700 w-16 mx-auto mt-6"></div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-16">
+                        <div className="bg-zinc-800 p-8 rounded-xl shadow-lg text-center">
+                            <FaMapMarkerAlt className="text-teal-500 text-4xl mx-auto mb-4" />
+                            <h2 className="text-white text-xl font-semibold">Explore New Places</h2>
+                            <p className="text-gray-400 mt-2">
+                                Find hidden gems and popular spots around your college campus using Google’s Places API and user added locations.
+                            </p>
+                        </div>
+
+                        <div className="bg-zinc-800 p-8 rounded-xl shadow-lg text-center">
+                            <FaStar className="text-teal-500 text-4xl mx-auto mb-4" />
+                            <h2 className="text-white text-xl font-semibold">Rate & Review</h2>
+                            <p className="text-gray-400 mt-2">
+                                Share your experiences by rating and reviewing adventures, helping others make the best choices.
+                            </p>
+                        </div>
+
+                        <div className="bg-zinc-800 p-8 rounded-xl shadow-lg text-center">
+                            <FaRandom className="text-teal-500 text-4xl mx-auto mb-4" />
+                            <h2 className="text-white text-xl font-semibold">Surprise Me!</h2>
+                            <p className="text-gray-400 mt-2">
+                                Feeling adventurous? Let us pick a random adventure for you with just one click!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="text-center mt-20">
+                        <p className="text-gray-400 text-lg leading-7">
+                            No account? No problem! You can explore freely, but to create and review adventures, simply sign up and verify your university email.
+                        </p>
+                        <p className="text-gray-400 text-lg mt-4">
+                            Start planning your next adventure with UniVentures today!
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
     );
 }
+
 export default About;

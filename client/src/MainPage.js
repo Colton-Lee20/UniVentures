@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/input.css';
 import Banner from './Banner';
 import SearchBar from './Search';
-import RenderLoginBanner from './NotSignedInBanner';
+import NotSignedInBanner from './NotSignedInBanner';
 import Login from './Login';
 import Signup from './Signup';
 import EmailSignUp from './SignUpEmail';
@@ -12,9 +12,18 @@ import { AuthProvider } from './AuthContext';
 
 function MainPage() {
 
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    useEffect(() => {
+        const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (storedUserInfo && storedUserInfo.schoolId) {
+            setIsLoggedIn(true);
+        }
+      }, []);
 
+      /*     this dont work
   const { isAuthenticated, loading } = useContext(AuthContext);
   if (loading) return null;
+        */
 
   return (
 
@@ -23,7 +32,7 @@ function MainPage() {
       <div className="bg-[#101c26] dark:bg-gray-800 overflow-auto flex flex-col items-center min-h-screen">
           
       {/* Conditionally render the banner based on authentication status */}
-      {isAuthenticated ? <Banner /> : <RenderLoginBanner />}
+      {isLoggedIn ? <Banner /> : <NotSignedInBanner />}
 
           {/* Centered content */}
           <div className='flex flex-col items-center bg-[#101c26] '>

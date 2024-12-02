@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 import "./css/input.css";
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -17,6 +18,8 @@ import Activities from './Activities';
 import Clubs from './Clubs';
 import RenderBanner from './RenderBanner';
 import { AuthProvider } from './AuthContext';
+import PublicAdventures from './Adventures';
+import CommunityAdventures from './CommunityAdventures';
 
 
 function App() {
@@ -36,6 +39,12 @@ function App() {
 
 
           <Route path="/school/:schoolID" element={<SchoolDetail />}>
+
+            {/* Default redirect to public-adventures */}
+            <Route index element={<Navigate to="adventures" />} />
+            <Route path="adventures" element={<PublicAdventures />} />
+            <Route path="community" element={<CommunityAdventures />} />
+
             <Route path="restaurant" element={<Restaurant />} />
             <Route path="stores" element={<Stores />} />
             <Route path="activities" element={<Activities />} />

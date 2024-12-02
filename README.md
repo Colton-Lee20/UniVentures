@@ -32,9 +32,19 @@ schools
         address VARCHAR(255),
         latitude double,
         longitude double,
+        type VARCHAR(3),
+        ratings DOUBLE,
         FOREIGN KEY (school_id) REFERENCES schools(id)
 
-
+TYPES:
+a = activitiy
+b = bar
+ca = class
+cb = club
+e = event
+o = other
+r = restaurant
+s = store
 
 
 CREATE TABLE `users`.`accounts` (

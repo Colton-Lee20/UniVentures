@@ -304,8 +304,24 @@ def get_school_by_id(school_id):
 def get_school_locations(school_id):
     db = get_db_connection_schools()
     cursor = db.cursor(dictionary=True)
+
+    # Get query parameters (if any)
+    type_filter = request.args.get('type', '')
+    ratings_filter = request.args.get('ratings', None)
+
+    # Base query with school_id condition
     query = "SELECT * FROM locations WHERE school_id = %s"
-    cursor.execute(query, (school_id,))
+    params = [school_id]
+
+    # Add optional filters
+    if type_filter:
+        query += " AND type LIKE %s"
+        params.append(f"%{type_filter}%")
+    if ratings_filter is not None:
+        query += " AND ratings <= %s"
+        params.append(int(ratings_filter))
+
+    cursor.execute(query, params)
     locations = cursor.fetchall()
     cursor.close()
     return jsonify(locations)
@@ -378,10 +394,11 @@ def add_adventure():
 
         # Extract data from request body
         data = request.json
-        school_id = data.get('school_id')
-        name = data.get('name')
+        school_id = data.get('schoolId')
+        name = data.get('adventureName')
+        type = data.get('type')
         description = data.get('description')
-        image_url = data.get('image_url')
+        image_url = data.get('imageUrl')
         address = data.get('address')
 
         # Validate input
@@ -390,10 +407,10 @@ def add_adventure():
 
         # SQL query with placeholders
         query = """
-        INSERT INTO locations (school_id, name, description, image_url, address)
-        VALUES (%s, %s, %s, %s, %s);
+        INSERT INTO locations (school_id, name, type, description, image_url, address)
+        VALUES (%s, %s, %s, %s, %s, %s);
         """
-        cursor.execute(query, (school_id, name, description, image_url, address))
+        cursor.execute(query, (school_id, name, type, description, image_url, address))
         db.commit()
 
         return jsonify({"message": "Adventure added successfully"}), 200
@@ -404,7 +421,6 @@ def add_adventure():
 
     finally:
         cursor.close()
-        db.close()
 
 # API Code
 GOOGLE_API_KEY = "AIzaSyCJfXxE5Ax1Iut7n9zPtjsodY-R-Y4OXWE"  
@@ -430,13 +446,14 @@ def get_university(school_id):
 
 # Fetch nearby places with photos
 @app.route('/api/nearby/<int:school_id>/<string:category>', methods=['GET'])
-def get_nearby_places(school_id, category):
+@app.route('/api/nearby/<int:school_id>/', methods=['GET'])
+def get_nearby_places(school_id, category=None):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT latitude, longitude FROM locations WHERE school_id = %s", (school_id,))
     location = cursor.fetchone()
+    cursor.fetchall()   #read all else from buffer
     cursor.close()
-    conn.close()
 
     if not location:
         return jsonify({"error": "University location not found"}), 404
@@ -452,16 +469,24 @@ def get_nearby_places(school_id, category):
         "clubs": "night_club",
         "stores": "store"
     }
-    place_type = place_types.get(category.lower())
 
-    if not place_type:
-        return jsonify({"error": "Invalid category"}), 400
+    if category:
+        place_type = place_types.get(category.lower())
+        if not place_type:
+            return jsonify({"error": "Invalid category"}), 400
+        url = (
+            f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+            f"location={latitude},{longitude}&radius=5000&type={place_type}&rankby=prominence&key={GOOGLE_API_KEY}"
+        )
+    else:
+        url = (
+            f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+            f"location={latitude},{longitude}&radius=5000&rankby=prominence&key={GOOGLE_API_KEY}"
+        )
+
 
     # Call Google Places API
-    url = (
-        f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-        f"location={latitude},{longitude}&radius=5000&type={place_type}&key={GOOGLE_API_KEY}"
-    )
+
     response = requests.get(url)
 
     if response.status_code != 200:
@@ -470,6 +495,8 @@ def get_nearby_places(school_id, category):
     # Process API response
     places = response.json().get("results", [])
     formatted_places = []
+
+    #sorted_places = sorted(places, key=lambda x: x.get("rating", 0), reverse=True)
 
     for place in places:
         formatted_place = {
@@ -494,6 +521,8 @@ def get_nearby_places(school_id, category):
         formatted_places.append(formatted_place)
 
     return jsonify(formatted_places)
+
+
     
 
 if __name__ == "__main__":

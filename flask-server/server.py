@@ -489,6 +489,8 @@ def get_nearby_places(id, category=None):
         )
 
     #for Marc
+
+    # M: Math.round(rating * 2) / 2
     # Call Google Places API
 
     response = requests.get(url)

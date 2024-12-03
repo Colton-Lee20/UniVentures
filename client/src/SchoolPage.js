@@ -7,6 +7,7 @@ import AddAdventure from './AddAdventure';
 import StaticPlusButton from './components/StaticPlusButton/StaticPlusButton';
 import Adventures from './Adventures';
 import CommunityAdventures from './CommunityAdventures';
+import StarRating from './components/StarRating/StarRating';
 
 
 const SchoolDetail = () => {
@@ -286,26 +287,26 @@ const SchoolDetail = () => {
 										)}
 									</div>
 
-									{/* Ratings */}
-									<div className="mt-4">
-										<label className="flex flex-col items-center block text-gray-700 dark:text-white mb-2">Ratings</label>
-										<input
-											type="range"
-											min="1"
-											max="5"
-											step="1"
-											className="w-full cursor-pointer accent-teal-700"
-											value={pendingFilters.ratings}
-											onChange={(e) => handleRatingsSelect(e.target.value)}
-										/>
-										<div className="space-x-9">
-											<span>⭐</span>
-											<span>⭐</span>
-											<span>⭐</span>
-											<span>⭐</span>
-											<span>⭐</span>
-										</div>
-									</div>
+                                    {/* Ratings */}
+                                    <div className="mt-4">
+                                        <label className="flex flex-col items-center block text-gray-700 dark:text-white mb-2">
+                                            Ratings
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min="1"
+                                            max="5"
+                                            step="0.5"
+                                            className="w-full cursor-pointer accent-teal-700"
+                                            value={pendingFilters.ratings}
+                                            onChange={(e) =>
+                                                setPendingFilters((prev) => ({ ...prev, ratings: Number(e.target.value) }))
+                                            }
+                                        />
+                                        {/* Use StarRating to Display Stars Dynamically */}
+                                        <StarRating rating={pendingFilters.ratings} />
+                                    </div>
+
 
 									{/* Apply Button */}
 									<div className="mt-2">

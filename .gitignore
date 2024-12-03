@@ -1,3 +1,4 @@
 client/node_modules/.cache
 flask-server/__pycache__
 .env
+API_KEY = AIzaSyCJfXxE5Ax1Iut7n9zPtjsodY-R-Y4OXWE

@@ -401,6 +401,7 @@ def add_adventure():
         description = data.get('description')
         image_url = data.get('imageUrl')
         address = data.get('address')
+        rating = data.get('rating')
 
         # Validate input
         if not all([school_id, name, description, image_url, address]):
@@ -408,10 +409,11 @@ def add_adventure():
 
         # SQL query with placeholders
         query = """
-        INSERT INTO locations (school_id, name, type, description, image_url, address)
-        VALUES (%s, %s, %s, %s, %s, %s);
+        INSERT INTO locations (school_id, name, type, description, image_url, address, ratings)
+        VALUES (%s, %s, %s, %s, %s, %s, %s);
         """
-        cursor.execute(query, (school_id, name, type, description, image_url, address))
+        print("Executing query:", query)
+        cursor.execute(query, (school_id, name, type, description, image_url, address, rating))
         db.commit()
 
         return jsonify({"message": "Adventure added successfully"}), 200
@@ -489,8 +491,6 @@ def get_nearby_places(id, category=None):
         )
 
     #for Marc
-
-    # M: Math.round(rating * 2) / 2
     # Call Google Places API
 
     response = requests.get(url)

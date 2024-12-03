@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import ActivityModal from './AdventureWindow';
 
 const Activities = () => {
   const { schoolID } = useParams();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedActivity, setSelectedActivity] = useState(null);
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -33,6 +35,15 @@ const Activities = () => {
     fetchActivities();
   }, [schoolID]);
 
+  const handleActivityClick = (activity) => 
+  {
+    setSelectedActivity(activity);
+  };
+
+  const closeModal = () => 
+  {
+    setSelectedActivity(null);
+  };
 
   if (loading) return <p>Loading activities...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -43,7 +54,8 @@ const Activities = () => {
         activities.map((activity) => (
           <div
             key={activity.place_id}
-            className="bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 flex flex-col items-center"
+            className="bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 flex flex-col items-center cursor-pointer" // Add cursor-pointer for clickability
+            onClick={() => handleActivityClick(activity)}
           >
             {activity.photos && activity.photos[0]?.photo_url ? (
               <img
@@ -66,7 +78,16 @@ const Activities = () => {
       ) : (
         <p className="text-center text-gray-500">No activities found nearby.</p>
       )}
+
+      {selectedActivity && (
+        <ActivityModal
+          activity={selectedActivity}
+          onClose={closeModal}
+        />
+      )}
+
     </div>
+    
   );
 };
 

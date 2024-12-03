@@ -34,6 +34,7 @@ const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
             description: e.target.description.value,
             imageUrl: e.target.imageUrl.value,
             address: e.target.address.value,
+            rating: parseFloat(e.target.rating.value),
         };
         onSubmit(formData); // Pass formData to the parent handler
     };
@@ -129,6 +130,21 @@ const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
                             id="address"
                             className="w-full p-2 border rounded"
                             placeholder="Enter address"
+                            required
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-bold mb-2">
+                            Rating out of 5
+                        </label>
+                        <input
+                            type="number"
+                            id="rating"
+                            className="w-full p-2 border rounded"
+                            placeholder="Enter rating number out of 5"
+                            min="1"
+                            max="5"
+                            step="0.1" 
                             required
                         />
                     </div>

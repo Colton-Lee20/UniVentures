@@ -427,7 +427,7 @@ def add_adventure():
 
 # API Code
 load_dotenv()
-GOOGLE_API_KEY = os.getenv("API_KEY")
+GOOGLE_API_KEY = "AIzaSyCJfXxE5Ax1Iut7n9zPtjsodY-R-Y4OXWE"
 
 def get_db_connection():
     return mysql.connector.connect(

@@ -49,11 +49,12 @@ const Activities = () => {
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
+    
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
       {activities.length > 0 ? (
         activities.map((activity) => (
           <div
-            key={activity.place_id}
+            key={activity.place_id || activity.name}
             className="bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 flex flex-col items-center cursor-pointer" // Add cursor-pointer for clickability
             onClick={() => handleActivityClick(activity)}
           >

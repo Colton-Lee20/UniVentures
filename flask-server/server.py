@@ -488,7 +488,7 @@ def get_nearby_places(id, category=None):
             f"location={latitude},{longitude}&radius=5000&rankby=prominence&key={GOOGLE_API_KEY}"
         )
 
-
+    #for Marc
     # Call Google Places API
 
     response = requests.get(url)

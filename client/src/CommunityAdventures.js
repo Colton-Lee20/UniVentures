@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ActivityModal from './AdventureWindow';
+import StarRating from './components/StarRating/StarRating';
 
 const CommunityAdventures = ({ schoolID, filters }) => {
   const [locations, setLocations] = useState([]);
@@ -65,8 +66,11 @@ const CommunityAdventures = ({ schoolID, filters }) => {
             <p className="text-sm text-center text-gray-500 mt-2">{location.description}</p>
             <p className="text-sm text-center text-gray-500 mt-2">{location.address}</p>
             {location.ratings && (
-              <p className="text-sm text-center text-yellow-500 mt-2">⭐ {location.ratings}</p>
-            )}
+    <div className="flex justify-center items-center mt-2">
+        <StarRating rating={location.ratings} variant="star-icon" />
+    </div>
+)}
+
           </div>
         ))
       ) : (

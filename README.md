@@ -4,6 +4,7 @@ Required Installs:
 pip install mysql-connector-python
 pip install requests (for universities database function)
 npm install @heroicons/react
+
 -----------------------------------------------------------------
 
 DATABASE
@@ -22,6 +23,8 @@ schools
         id            int            pk, nn, uq, ai
         school_name   varchar(255)   nn
         domain        varchar(255)   
+        latitude double
+        longitude double
 
     locations
         id INT PRIMARY KEY AUTO_INCREMENT,

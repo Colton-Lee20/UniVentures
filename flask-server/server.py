@@ -436,29 +436,31 @@ def get_db_connection():
     )
 
 # Fetch university details
-@app.route('/api/university/<int:school_id>', methods=['GET'])
-def get_university(school_id):
+@app.route('/api/university/<int:id>', methods=['GET'])
+def get_university(id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM locations WHERE school_id = %s", (school_id,))
+    cursor.execute("SELECT * FROM names WHERE id = %s", (id))
     university = cursor.fetchone()
     cursor.close()
     conn.close()
     return jsonify(university) if university else ({"error": "University not found"}, 404)
 
 # Fetch nearby places with photos
-@app.route('/api/nearby/<int:school_id>/<string:category>', methods=['GET'])
-@app.route('/api/nearby/<int:school_id>/', methods=['GET'])
-def get_nearby_places(school_id, category=None):
+@app.route('/api/nearby/<int:id>/<string:category>', methods=['GET'])
+@app.route('/api/nearby/<int:id>/', methods=['GET'])
+def get_nearby_places(id, category=None):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT latitude, longitude FROM locations WHERE school_id = %s", (school_id,))
+    query = "SELECT latitude, longitude FROM names WHERE id = %s"
+    cursor.execute(query, (id,))
     location = cursor.fetchone()
-    cursor.fetchall()   #read all else from buffer
     cursor.close()
+    conn.close()
 
     if not location:
-        return jsonify({"error": "University location not found"}), 404
+        return jsonify({"error": f"Location not found for school: {id}"}), 404
+
 
     latitude = location['latitude']
     longitude = location['longitude']

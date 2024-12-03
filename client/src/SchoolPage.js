@@ -24,6 +24,7 @@ const SchoolDetail = () => {
 	const isActiveLink = location.pathname === `/school/${schoolID}` && location.search === '';
 
 
+
 	const [pendingFilters, setPendingFilters] = useState({
 		type: '',
 		ratings: 5,
@@ -204,7 +205,6 @@ const SchoolDetail = () => {
 			alert('Error adding adventure');
 		}
 	};
-
 
 
 

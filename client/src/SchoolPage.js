@@ -195,6 +195,7 @@ const SchoolDetail = () => {
 			});
 
 			if (response.ok) {
+				window.location.reload();
 				toggleWindow();
 			} else {
 				const errorData = await response.json();

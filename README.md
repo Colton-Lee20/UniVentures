@@ -33,21 +33,19 @@ schools
         description TEXT,
         image_url VARCHAR(255),
         address VARCHAR(255),
-        latitude double,
-        longitude double,
         type VARCHAR(3),
         ratings DOUBLE,
         FOREIGN KEY (school_id) REFERENCES schools(id)
 
 TYPES:
-a = activitiy
-b = bar
-ca = class
-cb = club
-e = event
-o = other
-r = restaurant
-s = store
+A = activitiy
+B = bar
+Ca = class
+Cb = club
+E = event
+R = restaurant
+S = store
+O = other
 
 
 CREATE TABLE `users`.`accounts` (

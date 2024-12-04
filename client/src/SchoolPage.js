@@ -72,7 +72,8 @@ const SchoolDetail = () => {
 				'Clubs': 'CB',
 				'Events': 'E',
 				'Restaurants': 'R',
-				'Stores': 'S'
+				'Stores': 'S',
+				'Other': 'O'
 			};
 
 			const entireType = pendingFilters.type;
@@ -98,7 +99,7 @@ const SchoolDetail = () => {
 
 	const filtersForPublicAdventures = ['Activities', 'Bars', 'Restaurants', 'Stores']
 
-	const filtersForCommunityAdventures = ['Activities', 'Bars', 'Classes', 'Clubs', 'Events', 'Restaurants', 'Stores'];
+	const filtersForCommunityAdventures = ['Activities', 'Bars', 'Classes', 'Clubs', 'Events', 'Restaurants', 'Stores', 'Other'];
 
 	const activeFilters = activeTab === 'Public Adventures'
 		? filtersForPublicAdventures

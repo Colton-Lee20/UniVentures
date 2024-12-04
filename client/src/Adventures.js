@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import AdventureModal from './AdventureWindow';
+
 
 const Adventures = () => {
   const { schoolID } = useParams();
   const [adventures, setadventures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedAdventure, setSelectedAdventure] = useState(null);
+
 
   useEffect(() => {
     const fetchadventures = async () => {
@@ -14,6 +18,7 @@ const Adventures = () => {
         const response = await fetch(`/api/nearby/${schoolID}/activities`);
         if (!response.ok) throw new Error('Failed to fetch adventures');
         const data = await response.json();
+
         setadventures(data);
         setError(null);
       } catch (err) {
@@ -27,6 +32,15 @@ const Adventures = () => {
     fetchadventures();
   }, [schoolID]);
 
+  const handleAdventureClick = (activity) => {
+    setSelectedAdventure(activity);
+  };
+
+  const closeModal = () => {
+    setSelectedAdventure(null);
+  };
+
+
   if (loading) return <p>Loading Adventures...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -35,8 +49,9 @@ const Adventures = () => {
       {adventures.length > 0 ? (
         adventures.map((adventures) => (
           <div
-            key={adventures.place_id}
+            key={adventures.place_id || adventures.name}
             className="bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 flex flex-col items-center"
+            onClick={() => handleAdventureClick(adventures)}
           >
             {adventures.photos && adventures.photos[0]?.photo_url ? (
               <img
@@ -59,6 +74,14 @@ const Adventures = () => {
       ) : (
         <p className="text-center text-gray-500">No adventures found nearby.</p>
       )}
+
+      {selectedAdventure && (
+        <AdventureModal
+          activity={selectedAdventure}
+          onClose={closeModal}
+        />
+      )}
+
     </div>
   );
 };

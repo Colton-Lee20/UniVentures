@@ -6,10 +6,10 @@ import {ChevronDownIcon } from '@heroicons/react/solid';
 const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
     
 	const dropdownRef = useRef(null);
-    const [pendingFilters, setPendingFilters] = useState({type: ''});
+    const [pendingFilters, setPendingFilters] = useState({type: 'O'});
     const [typeFilterOpen, setTypeFilterOpen] = useState(false);
     const toggleTypeFilter = () => setTypeFilterOpen(!typeFilterOpen);
-    const activeFilters = ['Activity', 'Bar', 'Class', 'Club', 'Event', 'Restaurant', 'Store'];
+    const activeFilters = ['Activity', 'Bar', 'Class', 'Club', 'Event', 'Restaurant', 'Store', 'Other'];
 
     const typeMappings = {
         'Activity': 'A',
@@ -18,7 +18,8 @@ const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
         'Club': 'CB',
         'Event': 'E',
         'Restaurant': 'R',
-        'Store': 'S'
+        'Store': 'S',
+        'Other': 'O'
     };
 	
 	const handleTypeSelect = (type) => {

@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 from SchoolDB import get_schools
 from mysql.connector import Error
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 import requests                        # can remove if no one needs to fill their university database anymore
 import os
 
@@ -426,7 +426,6 @@ def add_adventure():
         cursor.close()
 
 # API Code
-load_dotenv()
 GOOGLE_API_KEY = "AIzaSyCJfXxE5Ax1Iut7n9zPtjsodY-R-Y4OXWE"
 
 def get_db_connection():

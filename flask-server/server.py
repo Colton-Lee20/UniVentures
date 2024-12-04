@@ -5,9 +5,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta
 from SchoolDB import get_schools
 from mysql.connector import Error
-#from dotenv import load_dotenv
+#from dotenv import load_dotenv        #for API key
 import requests                        # can remove if no one needs to fill their university database anymore
 import os
+import time                            #can remove after filling latitude and longitude
 
 app = Flask(__name__)
 
@@ -351,7 +352,7 @@ def get_school_by_domain(domain):
 
 
 
-#PURGE AND REFILL your names table!
+#FILL your names table!
 # This function grabs all universities from
 # http://universities.hipolabs.com/ API
 # filtered to United States
@@ -367,7 +368,7 @@ def insert_school_data(name, domain):
 def purge_and_refill():
 
     #purge names table
-    #-------
+    #------- i decided not to do this
 
     #get api data
     url = "http://universities.hipolabs.com/search?country=united%20states"
@@ -381,6 +382,59 @@ def purge_and_refill():
         insert_school_data(name, domain)
 
     return jsonify({"message": "Data fetched and stored successfully!"})
+
+
+
+#FILL your names table with LATITUDE and LONGITUDE!
+# This function uses OpenStreetMap
+# takes the university name and finds a latitude and longitude if exists
+# Nominatim API base URL
+BASE_URL = "https://nominatim.openstreetmap.org/search"
+
+def get_coordinates(university_name):
+    params = {
+        "q": university_name,
+        "format": "json",
+        "addressdetails": 1,
+        "limit": 1
+    }
+    
+    try:
+        response = requests.get(BASE_URL, params=params, headers={"User-Agent": "University Geocoder"})
+        data = response.json()
+        
+        if data:
+            lat = data[0]["lat"]
+            lon = data[0]["lon"]
+            return float(lat), float(lon)
+        else:
+            print(f"Could not find coordinates for {university_name}")
+            return None, None
+    except requests.exceptions.RequestException as e:
+        print(f"Error geocoding {university_name}: {e}")
+        return None, None
+    
+@app.route('/api/fill-locations', methods=['GET'])
+def update_database():
+    db = get_db_connection_schools()
+    cursor = db.cursor()
+    cursor.execute("SELECT id, school_name FROM names WHERE latitude IS NULL OR longitude IS NULL")
+    universities = cursor.fetchall()
+
+    for uni_id, name in universities:
+        lat, lon = get_coordinates(name)
+        
+        if lat and lon:
+            query = "UPDATE names SET latitude = %s, longitude = %s WHERE id = %s"
+            cursor.execute(query, (lat, lon, uni_id))
+            db.commit()
+            print(f"Updated {name} with latitude: {lat}, longitude: {lon}")
+        time.sleep(1)  # Sleep to avoid exceeding rate limits (1 request per second)
+        #could maybe get rid of sleep and try but idk how OpenStreetMap rly works with that
+        #run this and go eat or something
+
+
+
 
 
 #Route to add adventures to the database

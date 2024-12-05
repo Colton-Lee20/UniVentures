@@ -494,7 +494,7 @@ def get_random_location():
         query = """
         SELECT id, school_id, name, type, description, image_url, address, ratings
         FROM locations
-        WHERE school_id = %s AND (latitude IS NULL OR longitude IS NULL)  -- Exclude entries with lat/long
+        WHERE school_id = %s
         ORDER BY RAND()
         LIMIT 1;
         """

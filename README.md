@@ -36,6 +36,19 @@ schools
         type VARCHAR(3),
         ratings DOUBLE,
         FOREIGN KEY (school_id) REFERENCES schools(id)
+    
+        CREATE TABLE reviews (
+        review_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique ID for each review
+        school_id INT NOT NULL,                    -- Foreign key referencing the schools (names table)
+        location_id INT NOT NULL,                  -- Foreign key referencing the activities (locations table)
+        review_text TEXT NOT NULL,                 -- Review content
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for when the review was created
+
+        -- Foreign key constraints
+        FOREIGN KEY (school_id) REFERENCES names(id) ON DELETE CASCADE,
+        FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE
+    );
+
 
 TYPES:
 A = activitiy

@@ -50,7 +50,7 @@ const Adventures = () => {
         adventures.map((adventures) => (
           <div
             key={adventures.place_id || adventures.name}
-            className="bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 flex flex-col items-center"
+            className="bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 flex flex-col items-center cursor-pointer"
             onClick={() => handleAdventureClick(adventures)}
           >
             {adventures.photos && adventures.photos[0]?.photo_url ? (

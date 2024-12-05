@@ -618,6 +618,65 @@ def get_nearby_places(id, category=None):
     return jsonify(formatted_places)
 
 
+
+# Route to add a new review
+@app.route('/api/reviews', methods=['POST'])
+def add_review():
+    data = request.json
+    school_id = data.get('school_id')
+    location_id = data.get('location_id')
+    review_text = data.get('review')
+
+    if not (school_id and location_id and review_text):
+        return jsonify({'error': 'Missing data'}), 400
+
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = """
+                INSERT INTO reviews (school_id, location_id, review_text)
+                VALUES (%s, %s, %s)
+            """
+            cursor.execute(query, (school_id, location_id, review_text))
+            connection.commit()
+            return jsonify({'message': 'Review added successfully'}), 201
+        except Error as e:
+            return jsonify({'error': str(e)}), 500
+        finally:
+            cursor.close()
+            connection.close()
+    else:
+        return jsonify({'error': 'Database connection failed'}), 500
+
+
+# Route to fetch reviews by school and location
+@app.route('/api/reviews', methods=['GET'])
+def get_reviews():
+    school_id = request.args.get('school_id')
+    location_id = request.args.get('location_id')
+
+    if not (school_id and location_id):
+        return jsonify({'error': 'Missing query parameters'}), 400
+
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = """
+                SELECT * FROM reviews
+                WHERE school_id = %s AND location_id = %s
+            """
+            cursor.execute(query, (school_id, location_id))
+            reviews = cursor.fetchall()
+            return jsonify(reviews), 200
+        except Error as e:
+            return jsonify({'error': str(e)}), 500
+        finally:
+            cursor.close()
+            connection.close()
+    else:
+        return jsonify({'error': 'Database connection failed'}), 500
     
 
 if __name__ == "__main__":

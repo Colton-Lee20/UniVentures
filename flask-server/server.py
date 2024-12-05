@@ -6,8 +6,8 @@ from datetime import timedelta
 from SchoolDB import get_schools
 from mysql.connector import Error
 #from dotenv import load_dotenv        #for API key
-import requests                        # can remove if no one needs to fill their university database anymore
-import os
+import requests                      # can remove if no one needs to fill their university database anymore
+import random
 import time                            #can remove after filling latitude and longitude
 
 app = Flask(__name__)
@@ -478,6 +478,42 @@ def add_adventure():
 
     finally:
         cursor.close()
+
+@app.route('/api/random-location', methods=['GET'])
+def get_random_location():
+    # Connect to the database
+    db = get_db_connection_schools()
+    cursor = db.cursor(dictionary=True)  # Use dictionary=True for easy JSON serialization
+
+    try:
+        school_id = request.args.get('school_id')
+        if not school_id:
+            return jsonify({"error": "school_id is required"}), 400
+
+        # Query to fetch random location
+        query = """
+        SELECT id, school_id, name, type, description, image_url, address, ratings
+        FROM locations
+        WHERE school_id = %s AND (latitude IS NULL OR longitude IS NULL)  -- Exclude entries with lat/long
+        ORDER BY RAND()
+        LIMIT 1;
+        """
+        cursor.execute(query, (school_id,))
+        random_location = cursor.fetchone()
+
+        if not random_location:
+            return jsonify({"error": "No locations available for the given school_id"}), 404
+
+        return jsonify(random_location), 200
+
+    except Exception as e:
+        print("Error fetching random location:", e)
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        cursor.close()
+
+
 
 # API Code
 GOOGLE_API_KEY = "AIzaSyCJfXxE5Ax1Iut7n9zPtjsodY-R-Y4OXWE"

@@ -305,8 +305,9 @@ const SchoolDetail = () => {
                                                 setPendingFilters((prev) => ({ ...prev, ratings: Number(e.target.value) }))
                                             }
                                         />
+									<div className="flex justify-center items-center mt-2"></div>
                                         {/* Use StarRating to Display Stars Dynamically */}
-                                        <StarRating rating={pendingFilters.ratings} />
+                                        <StarRating rating={pendingFilters.ratings}/>
                                     </div>
 
 

@@ -47,6 +47,7 @@ const CommunityAdventures = ({ schoolID, filters }) => {
     const closeModal = () => 
     {
       setSelectedActivity(null);
+
     };
   
     
@@ -99,7 +100,10 @@ const CommunityAdventures = ({ schoolID, filters }) => {
   
       {/* Display Surprise Location */}
       {surpriseLocation ? (
-        <div className="mt-6 p-6 border rounded-lg shadow-lg bg-white dark:bg-gray-800">
+        <div 
+        onClick={() => handleActivityClick(surpriseLocation)}
+        className="mt-6 p-6 border rounded-lg shadow-lg bg-white dark:bg-gray-800"
+        >
           <img
             src={surpriseLocation.image_url}
             alt={surpriseLocation.name}

@@ -12,14 +12,10 @@ import Signup from './Signup';
 import Account from './Account';
 import NotFoundPage from './NotFoundPage';
 import SchoolDetail from './SchoolPage';
-import Restaurant from './Restaurant';
-import Stores from './Stores';
-import Activities from './Activities';
-import Clubs from './Clubs';
-import RenderBanner from './RenderBanner';
 import { AuthProvider } from './AuthContext';
 import PublicAdventures from './Adventures';
 import CommunityAdventures from './CommunityAdventures';
+import VerificationPage from './Verification';
 
 
 function App() {
@@ -33,6 +29,7 @@ function App() {
           <Route path='/Login' element={< Login />}></Route> 
           <Route path='/Signup' element={< Signup />}></Route>
           <Route path='/Account/*' element={< Account />}></Route>
+          <Route path='/Verification' element={< VerificationPage />}></Route>
           <Route path='*' element={< NotFoundPage />}></Route>
 
 
@@ -44,11 +41,6 @@ function App() {
             <Route index element={<Navigate to="adventures" />} />
             <Route path="adventures" element={<PublicAdventures />} />
             <Route path="community" element={<CommunityAdventures />} />
-
-            <Route path="restaurant" element={<Restaurant />} />
-            <Route path="stores" element={<Stores />} />
-            <Route path="activities" element={<Activities />} />
-            <Route path="clubs" element={<Clubs />} />
           </Route>
           </Routes>
     </Router>

@@ -37,17 +37,32 @@ schools
         ratings DOUBLE,
         FOREIGN KEY (school_id) REFERENCES schools(id)
     
-        CREATE TABLE reviews (
-        review_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique ID for each review
-        school_id INT NOT NULL,                    -- Foreign key referencing the schools (names table)
-        location_id INT NOT NULL,                  -- Foreign key referencing the activities (locations table)
-        review_text TEXT NOT NULL,                 -- Review content
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for when the review was created
-
-        -- Foreign key constraints
-        FOREIGN KEY (school_id) REFERENCES names(id) ON DELETE CASCADE,
-        FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE
-    );
+    CREATE TABLE `reviews` (
+        `review_id` INT NOT NULL AUTO_INCREMENT,
+        `school_id` INT NOT NULL,
+        `location_id` INT NOT NULL,
+        `user_id` INT NOT NULL,
+        `review_text` TEXT NOT NULL,
+        `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`review_id`),
+        KEY `school_id` (`school_id`),
+        KEY `location_id` (`location_id`),
+        KEY `user_id` (`user_id`),
+        CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`school_id`) 
+            REFERENCES `names` (`id`) 
+            ON DELETE CASCADE,
+        CONSTRAINT `reviews_ibfk_2` FOREIGN KEY (`location_id`) 
+            REFERENCES `locations` (`id`) 
+            ON DELETE CASCADE,
+        CONSTRAINT `reviews_ibfk_3` FOREIGN KEY (`user_id`) 
+            REFERENCES `users`.`accounts` (`id`) 
+            ON DELETE CASCADE
+        ) 
+        ENGINE=InnoDB 
+        AUTO_INCREMENT=5 
+        DEFAULT CHARSET=utf8mb4 
+        COLLATE=utf8mb4_0900_ai_ci;
+    
 
 
 TYPES:

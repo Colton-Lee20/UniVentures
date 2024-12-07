@@ -617,7 +617,15 @@ def get_nearby_places(id, category=None):
 
     return jsonify(formatted_places)
 
-
+#Route to get user id
+@app.route('/api/auth/user-info', methods=['GET'])
+def get_user_info():
+    # Check if the user is logged in by checking if 'user_id' exists in the session
+    if 'user_id' in session:
+        user_id = session['user_id']
+        return jsonify({'user_id': user_id}), 200
+    else:
+        return jsonify({'error': 'User not logged in'}), 401
 
 # Route to add a new review
 @app.route('/api/reviews', methods=['POST'])
@@ -626,8 +634,9 @@ def add_review():
     school_id = data.get('school_id')
     location_id = data.get('location_id')
     review_text = data.get('review')
+    user_id = data.get('user_id')  # Retrieve the user_id from the request
 
-    if not (school_id and location_id and review_text):
+    if not (school_id and location_id and review_text and user_id):
         return jsonify({'error': 'Missing data'}), 400
 
     connection = get_db_connection()
@@ -635,10 +644,10 @@ def add_review():
         try:
             cursor = connection.cursor()
             query = """
-                INSERT INTO reviews (school_id, location_id, review_text)
-                VALUES (%s, %s, %s)
+                INSERT INTO reviews (school_id, location_id, review_text, user_id)
+                VALUES (%s, %s, %s, %s)
             """
-            cursor.execute(query, (school_id, location_id, review_text))
+            cursor.execute(query, (school_id, location_id, review_text, user_id))  
             connection.commit()
             return jsonify({'message': 'Review added successfully'}), 201
         except Error as e:
@@ -670,6 +679,41 @@ def get_reviews():
             cursor.execute(query, (school_id, location_id))
             reviews = cursor.fetchall()
             return jsonify(reviews), 200
+        except Error as e:
+            return jsonify({'error': str(e)}), 500
+        finally:
+            cursor.close()
+            connection.close()
+    else:
+        return jsonify({'error': 'Database connection failed'}), 500
+    
+#route for fetching reviews based on user id
+@app.route('/api/reviews/user', methods=['GET'])
+def get_reviews_by_user():
+    user_id = request.args.get('user_id')
+    print(f"Received request for user_id: {user_id}")  # Log the user_id
+
+    if not user_id:
+        return jsonify({'error': 'Missing user_id parameter'}), 400
+
+    # Connect to the database
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            # Modify this query based on your actual database schema
+            query = """
+                SELECT * FROM reviews
+                WHERE user_id = %s
+            """
+            cursor.execute(query, (user_id,))
+            reviews = cursor.fetchall()
+
+            if reviews:
+                return jsonify(reviews), 200
+            else:
+                return jsonify({'message': 'No reviews found for this user'}), 404
+
         except Error as e:
             return jsonify({'error': str(e)}), 500
         finally:

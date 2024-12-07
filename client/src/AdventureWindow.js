@@ -5,11 +5,15 @@ const ActivityModal = ({ activity, onClose }) => {
     const [isPublic, setIsPublic] = useState(false);
     const [reviewText, setReviewText] = useState('');
     const [reviews, setReviews] = useState([]);
+    const [userId, setUserId] = useState(null); // State to store userId
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if the user is logged in
 
     useEffect(() => {
         if (activity) {
             fetchReviews();
         }
+
+        checkLoginStatus();
     }, [activity]); 
 
     const fetchReviews = async () => {
@@ -22,15 +26,32 @@ const ActivityModal = ({ activity, onClose }) => {
         }
     };
 
+    const checkLoginStatus = async () => {
+        try {
+            const response = await fetch('/api/auth/check-login');
+            const data = await response.json();
+
+            if (data.isLoggedIn) {
+                setIsLoggedIn(true);
+                const userInfoResponse = await fetch('/api/auth/user-info'); 
+                const userInfo = await userInfoResponse.json();
+                setUserId(userInfo.user_id); 
+            } else {
+                setIsLoggedIn(false);
+            }
+        } catch (error) {
+            console.error('Error checking login status:', error);
+        }
+    };
+
     useEffect(() => {
-        //set vars if a public adventure
+        // set vars if a public adventure
         if (activity.photos && activity.photos[0]?.photo_url) {
             setIsPublic(true);
             activity.image_url = activity.photos[0]?.photo_url;
             activity.address = activity.vicinity;
         }
-    }
-    )
+    }, [activity]);  
 
     const handleReviewChange = (e) => {
         setReviewText(e.target.value);
@@ -38,6 +59,11 @@ const ActivityModal = ({ activity, onClose }) => {
 
     const handleSubmitReview = async () => {
         if (!reviewText.trim()) return;
+
+        if (!isLoggedIn) {
+            alert('User is not logged in');
+            return;
+        }
 
         try {
             const response = await fetch('/api/reviews', {
@@ -47,14 +73,15 @@ const ActivityModal = ({ activity, onClose }) => {
                 },
                 body: JSON.stringify({
                     school_id: activity.school_id,
-                    location_id: activity.id,       
+                    location_id: activity.id,
+                    user_id: userId,  // Use the userId from session
                     review: reviewText,
                 }),
             });
 
             if (response.ok) {
                 setReviewText('');
-                fetchReviews(); 
+                fetchReviews();
             } else {
                 alert('Failed to submit review.');
             }

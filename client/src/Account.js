@@ -14,6 +14,8 @@ function Account() {
   const [message, setMessage] = useState('');
   const [schoolPlaceholder, setSchoolPlaceholder] = useState('');
   const [schoolImageURL, setSchoolImageURL] = useState('');
+  const [reviews, setReviews] = useState([]);             // State for reviews
+  const [reviewsLoading, setReviewsLoading] = useState(true); // State to handle review loading
 
 
   // GET LOGIN COOKIE
@@ -26,6 +28,17 @@ function Account() {
           setIsLoggedIn(true);
           const userResponse = await axios.get('/api/account');
 
+          // Fetch the user info and user ID
+          const userInfoResponse = await axios.get('/api/auth/user-info');
+          const userId = userInfoResponse.data.user_id;
+          if (userId) {
+            console.log("User ID:", userId);  // Check user ID
+            setUserInfo({ ...userInfoResponse.data, user_id: userId });
+            // Proceed with fetching reviews
+            fetchReviews(userId);
+          }
+          
+          console.log("User Info Response:", userResponse.data); // Check if this log appears
           setUserInfo(userResponse.data);
           setFirstName(userResponse.data.firstName);
           setLastName(userResponse.data.lastName);
@@ -41,6 +54,29 @@ function Account() {
     checkLoginStatus();
   }, []);
 
+  // Fetch reviews based on user_id
+  const fetchReviews = async (user_id) => {
+    console.log("Fetching reviews for user_id:", user_id); // Check if user_id is correct
+    try {
+      const response = await axios.get(`/api/reviews/user?user_id=${user_id}`);
+      console.log("Fetched reviews:", response.data);  // Log the response data
+      setReviews(response.data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      setError("Failed to load reviews");
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  // Update schoolPlaceholder after userInfo is set
+  useEffect(() => {
+    if (userInfo) {
+      setSchoolPlaceholder(
+        userInfo.schoolName || "School with your email is not in the system. Please contact us to add it!"
+      );
+    }
+  }, [userInfo]);
   // Update schoolPlaceholder after userInfo is set
   useEffect(() => {
     if (userInfo) {
@@ -233,6 +269,27 @@ function Account() {
           )}
           {message && <p className="flex flex-col items-center mt-4 text-white">{message}</p>}
           {error && <p className="text-red-500 mt-4">{error}</p>}
+        </div>
+        {/* Reviews Section */}
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Your Reviews</h2>
+          {reviewsLoading ? (
+            <p>Loading reviews...</p>
+          ) : (
+            <div className="space-y-4">
+              {reviews.length > 0 ? (
+                reviews.map((review) => (
+                  <div key={review.id} className="border-b border-gray-600 pb-4">
+                    <h3 className="text-lg font-semibold">{review.review_text}</h3>
+                    <p>{review.comment}</p>
+                    <p className="text-sm text-gray-400">Rating: {review.rating} / 5</p>
+                  </div>
+                ))
+              ) : (
+                <p>No reviews found.</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

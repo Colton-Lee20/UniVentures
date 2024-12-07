@@ -9,25 +9,45 @@ import Signup from './Signup';
 import EmailSignUp from './SignUpEmail';
 import { AuthContext } from './AuthContext';
 import { AuthProvider } from './AuthContext';
+import axios from 'axios';
+
 
 function MainPage() {
-
+    const [loading, setLoading] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    
     useEffect(() => {
-        const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
-        if (storedUserInfo && storedUserInfo.schoolId) {
-            setIsLoggedIn(true);
+    const checkLogin = async () => {
+        try {
+          const loginResponse = await axios.get('/api/auth/check-login');
+            if (loginResponse.data.isLoggedIn) {
+                setIsLoggedIn(true);
+            }
         }
+        catch (error) {
+            console.error("Failed to check login status: ", error);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+        checkLogin();
       }, []);
+    
 
       /*     this dont work
   const { isAuthenticated, loading } = useContext(AuthContext);
   if (loading) return null;
         */
 
+  if (loading) {
+    <div 
+        className="bg-[#101c26] dark:bg-gray-800 overflow-auto flex flex-col items-center min-h-screen">
+    </div>
+  }
+  else {
   return (
-
-    
       // Main container with full height and width
       <div className="bg-[#101c26] dark:bg-gray-800 overflow-auto flex flex-col items-center min-h-screen">
           
@@ -58,7 +78,7 @@ function MainPage() {
               </div>
           </div>
       </div>
-  );
+  );}
 }
 
 export default MainPage;

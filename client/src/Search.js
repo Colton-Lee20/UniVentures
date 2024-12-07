@@ -9,10 +9,19 @@ const SearchBar = () => {
     const navigate = useNavigate();
     
     useEffect(() => {
-        const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
-        if (storedUserInfo && storedUserInfo.schoolId) {
-            setIsLoggedIn(true);
+        const checkLoginStatus = async () => {
+            try {
+                const response = await axios.get('/api/auth/check-login');
+                if (response.data.isLoggedIn) {
+                    setIsLoggedIn(true);
+                }
+            }
+            catch(error) {
+                console.error('Error checking login status:', error);
+            setIsLoggedIn(false);
+            }
         }
+        checkLoginStatus();
       }, []);
 
     const handleSearch = async (e) => {

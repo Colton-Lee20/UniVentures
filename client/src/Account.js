@@ -22,27 +22,21 @@ function Account() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get('/api/auth/check-login');
+        const loginResponse = await axios.get('/api/auth/check-login');
         
-        if (response.data.isLoggedIn) {
+        if (loginResponse.data.isLoggedIn) {
           setIsLoggedIn(true);
-          const userResponse = await axios.get('/api/account');
 
-          // Fetch the user info and user ID
-          const userInfoResponse = await axios.get('/api/auth/user-info');
-          const userId = userInfoResponse.data.user_id;
-          if (userId) {
-            console.log("User ID:", userId);  // Check user ID
-            setUserInfo({ ...userInfoResponse.data, user_id: userId });
-            // Proceed with fetching reviews
-            fetchReviews(userId);
-          }
+          // Fetch account information
+          const accountResponse = await axios.get('/api/account');
+          const accountData = accountResponse.data;
+          setUserInfo(accountData);
+          setFirstName(accountData.firstName);
+          setLastName(accountData.lastName);
           
-          console.log("User Info Response:", userResponse.data); // Check if this log appears
-          setUserInfo(userResponse.data);
-          setFirstName(userResponse.data.firstName);
-          setLastName(userResponse.data.lastName);
-          localStorage.setItem('userInfo', JSON.stringify(userResponse.data)); // Store user info in local storage
+          // Fetch user reviews
+          fetchReviews(accountData.id);
+
         }
       } catch (error) {
         console.error('Error checking login status:', error);
@@ -55,11 +49,10 @@ function Account() {
   }, []);
 
   // Fetch reviews based on user_id
-  const fetchReviews = async (user_id) => {
-    console.log("Fetching reviews for user_id:", user_id); // Check if user_id is correct
+  const fetchReviews = async (userId) => {
+    console.log("Fetching reviews for user_id:", userId); // Check if user_id is correct
     try {
-      const response = await axios.get(`/api/reviews/user?user_id=${user_id}`);
-      console.log("Fetched reviews:", response.data);  // Log the response data
+      const response = await axios.get(`/api/reviews/user?user_id=${userId}`);
       setReviews(response.data);
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -110,7 +103,6 @@ function Account() {
     try {
       const response = await axios.post('/api/auth/logout');
       if (response.status === 200) {
-        localStorage.removeItem('userInfo');  //remove local storage
         window.location.href = '/'
       }
     } catch (error) {
@@ -133,7 +125,8 @@ function Account() {
       if (response.status === 200) {
         userInfo.firstName = firstName;   //set original database vars to new database vars
         userInfo.lastName = lastName;     //so if handleSave() with no change it doesnt make request
-        localStorage.setItem('userInfo', JSON.stringify(userInfo));         //IMPORTANT: update local storage names for changes
+        
+        //localStorage.setItem('userInfo', JSON.stringify(userInfo));         //IMPORTANT: update local storage names for changes
         setMessage("Your account has been updated successfully!");
         setIsEditing(false);
       }

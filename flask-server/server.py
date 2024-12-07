@@ -200,7 +200,7 @@ def get_account_info():
     cursor = db.cursor(dictionary=True)
     
     try:
-        query = "SELECT email, firstName, lastName, schoolName, schoolId FROM accounts WHERE id = %s"
+        query = "SELECT id, email, firstName, lastName, schoolName, schoolId FROM accounts WHERE id = %s"
         cursor.execute(query, (user_id,))
         user_info = cursor.fetchone()
         

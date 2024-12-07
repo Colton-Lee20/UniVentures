@@ -9,18 +9,30 @@ from mysql.connector import Error
 import requests                      # can remove if no one needs to fill their university database anymore
 import random
 import time                            #can remove after filling latitude and longitude
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
 
 app = Flask(__name__)
 
+#SESSION/COOKIE
 app.secret_key = 'bf2e7a21c3a6e54709d62d885c7cv965f793da2f4f489a23b7b3b94a93f869c4'
 app.config['SESSION_COOKIE_SECURE'] = False  # just for local development, ONCE USING HTTPS SHOULD BE True
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # sets cookie life span
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # just for local development, ONCE USING HTTPS SHOULD BE 'None'
 
+#EMAIL VERIFICATION
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'univentures450@gmail.com'  #should be in .env
+app.config['MAIL_PASSWORD'] = 'iwoy jwzt vnmf sgby'  #should be in .env
+app.config['MAIL_DEFAULT_SENDER'] = 'UniVentures Verification'
+
 CORS(app, supports_credentials=True)
 
+mail = Mail(app)
 
-
+serializer = URLSafeTimedSerializer("AIAIfjaskldjKLAJAKLJDAasz2fa032m29") #should be in .env
 
 #
 #   THE FOLLOWING CONNECTIONS ARE USED THROUGHOUT THE BACKEND
@@ -103,10 +115,16 @@ def login():
             
             # PASSWORD CORRECT
             if check_password_hash(stored_password_hash, password): 
-                response = make_response(jsonify({'message': 'Login successful'}))
-                session['user_id'] = result['id']
-                session.permanent = True
-                return response, 200
+                # VERIFIED
+                if result['verified']:
+                    response = make_response(jsonify({'message': 'Login successful'}))
+                    session['user_id'] = result['id']
+                    session.permanent = True
+                    return response, 200
+                # NOT VERIFIED
+                else:
+                    return jsonify({"message": "Please verify your email before logging in"}), 403
+
             # PASSWORD INCORRECT
             else:
                 return jsonify({"message": "Invalid password"}), 401
@@ -146,30 +164,36 @@ def signup():
             #TRY TO GET UNIVERSITY FOR ACCOUNT
             domain = email.split('@')[1]
             response = get_school_by_domain(domain)
+            print(response)
+            
+            
             #school is found
-            if response:
-                response_json = response.get_json()
-                query = "INSERT INTO accounts (email, password, schoolId, schoolName) VALUES (%s, %s, %s, %s)"
-                cursor.execute(query, (email, hashed_password, response_json[0], response_json[1]))
+            if isinstance(response, tuple):
+                status_code = response[1]
+                response = response[0]
             #school is not found
             else:
+                status_code = response.status_code
+
+            if status_code == 200:
+                school_info = response.get_json()  # Extract JSON data from the Response object
+                query = "INSERT INTO accounts (email, password, schoolId, schoolName) VALUES (%s, %s, %s, %s)"
+                cursor.execute(query, (email, hashed_password, school_info[0], school_info[1]))
+            elif status_code == 404:
                 query = "INSERT INTO accounts (email, password) VALUES (%s, %s)"
                 cursor.execute(query, (email, hashed_password))
 
             db.commit()
 
-            #GET SESSION ID AND CREATE SESSION
-            query = "SELECT * FROM accounts WHERE email = %s"
-            cursor.execute(query, (email,))
-            new_user = cursor.fetchone()
-            if new_user:
-                print(new_user)
-                session['user_id'] = new_user['id']  # Set the session variable
-                session.permanent = True
+            # Send the verification email
+            token = serializer.dumps(email, salt='email-confirm')
+            verification_url = f"{request.url_root}verify/{token}"
 
-                return jsonify({"message": "Account created successfully!"}), 201
-            else:
-                return jsonify({"message": "Failed to retrieve the newly created account."}), 500
+            msg = Message('Confirm Your Email', recipients=[email])
+            msg.body = f'Click the following link to verify your email address: {verification_url}'
+            mail.send(msg)
+
+            return jsonify({"message": "Account created"}), 201
             
     finally:
         cursor.close()
@@ -255,6 +279,32 @@ def logout():
     response.set_cookie('session', '', expires=0)
     return response, 200
 
+
+
+#VERIFICATION ROUTE
+@app.route('/verify/<token>')
+def verify_email(token):
+    try:
+        # Verify the token and extract the email
+        email = serializer.loads(token, salt='email-confirm', max_age=3600)  # Token expires in 1 hour
+    except:
+        return jsonify({"message": "The verification link is invalid or has expired."}), 400
+
+    # Mark the user as verified
+    db = get_db_connection_users()
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        query = "UPDATE accounts SET verified = %s WHERE email = %s AND verified = %s"
+        cursor.execute(query, (True, email, False))  # Only update if the user was 'unverified'
+        db.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"message": "This email is already verified or does not exist."}), 400
+
+        return jsonify({"message": "Email verified successfully!"}), 200
+    finally:
+        cursor.close()
 
 
 

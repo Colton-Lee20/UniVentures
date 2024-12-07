@@ -1,5 +1,15 @@
 # UniVenture
 
+TO DO:
+Remove cookie on signup
+Redirect user to login page from signup
+    -notify them they should verify their account now and then login
+Remove change email
+Add account deletion
+
+
+
+
 Required Installs:
 pip install mysql-connector-python
 pip install requests (for universities database function)
@@ -17,6 +27,7 @@ users
         lastName  varchar(255)
         schoolName varchar(255)
         schoolId  int
+        verified    TINYINT     defaultValue = FALSE or 0    
 
 schools
     names

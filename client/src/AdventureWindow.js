@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import StarRating from './StarRating';
 
 const ActivityModal = ({ activity, onClose }) => {
 
@@ -7,6 +8,11 @@ const ActivityModal = ({ activity, onClose }) => {
     const [reviews, setReviews] = useState([]);
     const [userId, setUserId] = useState(null); // State to store userId
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if the user is logged in
+    const [currentRating, setCurrentRating] = useState(activity.ratings);
+
+    const handleRatingUpdate = (newAverage) => {
+        setCurrentRating(newAverage);
+    };
 
     useEffect(() => {
         if (activity) {
@@ -129,9 +135,13 @@ const ActivityModal = ({ activity, onClose }) => {
                     </div>
                     {activity.ratings && (
                         <div>
-                            <h3 className="text-xl text-gray-700 dark:text-gray-300 font-bold">Ratings</h3>
-                            <p className="text-yellow-500">⭐ {activity.ratings}</p>
-                        </div>
+                        <h3 className="text-xl font-bold">Ratings</h3>
+                        <StarRating
+                            locationId={activity.id}
+                            currentRating={currentRating}
+                            onRatingUpdate={handleRatingUpdate}
+                        />
+                    </div>
                     )}
                     <div>
                         <h3 className="text-xl text-gray-700 dark:text-gray-300 font-bold">Write a Review</h3>

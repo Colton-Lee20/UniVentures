@@ -773,6 +773,55 @@ def get_reviews_by_user():
         return jsonify({'error': 'Database connection failed'}), 500
     
 
+#route to update star rating
+@app.route('/api/rate', methods=['POST'])
+def rate_activity():
+    data = request.json
+    location_id = data.get('location_id')
+    user_rating = data.get('rating')
+    user_id = data.get('user_id')  # Ensure you pass the user ID from the frontend
+
+    if not location_id or user_rating is None:
+        return jsonify({"error": "Location ID and rating are required"}), 400
+
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        # Insert or update user rating
+        cursor.execute("""
+            INSERT INTO user_ratings (location_id, user_id, rating)
+            VALUES (%s, %s, %s)
+            ON DUPLICATE KEY UPDATE rating = VALUES(rating)
+        """, (location_id, user_id, user_rating))
+
+        # Calculate the new average rating for the location
+        cursor.execute("""
+            SELECT AVG(rating) as avg_rating
+            FROM user_ratings
+            WHERE location_id = %s
+        """, (location_id,))
+        avg_rating = cursor.fetchone()['avg_rating']
+
+        # Update the average rating in the locations table
+        cursor.execute("""
+            UPDATE locations
+            SET ratings = %s
+            WHERE id = %s
+        """, (avg_rating, location_id))
+        
+        connection.commit()
+        return jsonify({"message": "Rating updated successfully", "average_rating": avg_rating}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+    
+
 if __name__ == "__main__":
     app.run(debug=True)
 

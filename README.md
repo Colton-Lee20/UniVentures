@@ -1,12 +1,16 @@
 # UniVenture
 
 TO DO:
+- Finish filters
 - Remove change email
 - Add account deletion
 - Add transition to ActivityModal? (smooth slide up)
 - Move logout button to settings button?
 - Show reviews on Account page
 - Fix stars (only show 1 on preview maybe, show 5 once clicked on)
+- Update cookie to keep user signed in for longer
+- Add user added custom adventures to their account?
+- Let users edit/delete their own adventures they created (could be done on account page)
 
 
 

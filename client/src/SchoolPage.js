@@ -15,7 +15,6 @@ const SchoolDetail = () => {
 	const [school, setSchool] = useState(null);
 	const [schoolImageURL, setSchoolImageURL] = useState('');
 	const [isWindowOpen, setWindowOpen] = useState(false);
-	const [darkMode, setDarkMode] = useState(false);
 	const [isFilterOpen, setFilterOpen] = useState(false);
 	const location = useLocation();
 	const [activeTab, setActiveTab] = useState('Public Adventures'); // current tab to change filters
@@ -117,25 +116,6 @@ const SchoolDetail = () => {
 	}, [location]);
 
 
-	{/* DARK MODE */ }
-	useEffect(() => {
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme === 'dark') {
-			document.documentElement.classList.add('dark');
-			setDarkMode(true);
-		}
-	}, []);
-
-	const toggleDarkMode = () => {
-		setDarkMode((prev) => {
-			const newMode = !prev;
-			document.documentElement.classList.toggle('dark', newMode);
-			localStorage.setItem('theme', newMode ? 'dark' : 'light');
-			return newMode;
-		});
-	};
-
-
 	{/* CLICK OUTSIDE FILTERS */ }
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -218,20 +198,10 @@ const SchoolDetail = () => {
 */}
 
 	return (
-		<main className="bg-white dark:bg-gray-800">
-			<div className={`min-h-screen flex flex-col ${darkMode ? 'dark' : ''}`}>
+		<main className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE">
+			<div className={`min-h-screen flex flex-col`}>
 				<Banner />
 				<div className="p-4 relative">
-					<button
-						onClick={toggleDarkMode}
-						className="p-2 rounded-md bg-gray-200 dark:bg-gray-800 flex items-center"
-					>
-						{darkMode ? (
-							<SunIcon className="h-6 w-6 text-yellow-400" />
-						) : (
-							<MoonIcon className="h-6 w-6 text-gray-600" />
-						)}
-					</button>
 					<div className="flex flex-col items-center mb-4">
 						{schoolImageURL && (
 							<img
@@ -241,7 +211,7 @@ const SchoolDetail = () => {
 								onError={(e) => (e.target.style.display = 'none')}
 							/>
 						)}
-						<h1 className="text-4xl font-bold cursor-default">{school.school_name}</h1>
+						<h1 className="text-4xl text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE font-bold cursor-default">{school.school_name}</h1>
 					</div>
 
 					{/* Filter */}
@@ -351,7 +321,7 @@ const SchoolDetail = () => {
 									className={`px-4 py-2 text-lg font-medium ${
 										isActiveLink
 										  ? 'text-teal-600 border-b-2 border-teal-600'
-										  : 'text-gray-500 hover:text-teal-500'
+										  : 'text-gray-500 dark:text-gray-300 hover:text-teal-500 dark:hover:text-teal-500'
 									 }`}
 									
 								>
@@ -362,7 +332,7 @@ const SchoolDetail = () => {
 									className={({ isActive }) =>
 										`px-4 py-2 text-lg font-medium ${isActive
 											? 'text-teal-600 border-b-2 border-teal-600'
-											: 'text-gray-500 hover:text-teal-500'
+											: 'text-gray-500 dark:text-gray-300 hover:text-teal-500 dark:hover:text-teal-500'
 										}`
 									}
 									onClick={() => {

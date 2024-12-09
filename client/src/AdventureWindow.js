@@ -9,6 +9,11 @@ const ActivityModal = ({ activity, onClose }) => {
     const [userId, setUserId] = useState(null); // State to store userId
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track if the user is logged in
     const [currentRating, setCurrentRating] = useState(activity.ratings);
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        setIsVisible(true);
+      }, []);
 
     const handleRatingUpdate = (newAverage) => {
         setCurrentRating(newAverage);
@@ -130,12 +135,12 @@ const ActivityModal = ({ activity, onClose }) => {
                         </div>
                     )}
                     <div>
-                        <h3 className="text-xl text-gray-700 dark:text-gray-300 font-bold">Address</h3>
+                        <h3 className="text-xl text-gray-700 dark:text-gray-300 font-bold">Location</h3>
                         <p className="text-gray-600 dark:text-gray-400">{activity.address}</p>
                     </div>
                     {activity.ratings && (
                         <div>
-                        <h3 className="text-xl font-bold">Ratings</h3>
+                        <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300">Ratings</h3>
                         <StarRating
                             locationId={activity.id}
                             currentRating={currentRating}

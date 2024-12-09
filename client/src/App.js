@@ -20,7 +20,7 @@ import VerificationPage from './Verification';
 
 function App() {
   return (
-    <AuthProvider>
+  
     <Router>
         <Routes>
           <Route path="/" element={<MainPage />} />
@@ -44,7 +44,7 @@ function App() {
           </Route>
           </Routes>
     </Router>
-    </AuthProvider>
+
   );
 }
 

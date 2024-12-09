@@ -50,7 +50,7 @@ const Adventures = () => {
         adventures.map((adventures) => (
           <div
             key={adventures.place_id || adventures.name}
-            className="bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 flex flex-col items-center cursor-pointer"
+            className="bg-white dark:bg-[#0b141c] border dark:border-[#0b141c] border rounded-lg shadow-lg p-4 flex flex-col items-center cursor-pointer"
             onClick={() => handleAdventureClick(adventures)}
           >
             {adventures.photos && adventures.photos[0]?.photo_url ? (
@@ -64,10 +64,10 @@ const Adventures = () => {
                 <span className="text-gray-500">No Image Available</span>
               </div>
             )}
-            <h3 className="font-semibold text-lg text-center">{adventures.name}</h3>
-            <p className="text-sm text-center text-gray-500 mt-2">{adventures.vicinity}</p>
+            <h3 className="font-semibold text-lg text-center text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{adventures.name}</h3>
+            <p className="text-sm text-center text-gray-500 mt-2 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{adventures.vicinity}</p>
             {adventures.rating && (
-              <p className="text-sm text-center text-yellow-500 mt-2">⭐ {adventures.rating}</p>
+              <p className="text-sm text-center text-yellow-500 mt-2 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">⭐ {adventures.rating}</p>
             )}
           </div>
         ))

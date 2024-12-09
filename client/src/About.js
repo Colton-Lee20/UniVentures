@@ -5,13 +5,13 @@ import { FaMapMarkerAlt, FaStar, FaRandom } from 'react-icons/fa';
 
 function About() {
     return (
-        <div className="bg-[#101c26] min-h-screen overflow-x-hidden">  
+        <div className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE min-h-screen overflow-x-hidden">  
             <Banner />
             <section className="py-16">
                 <div className="max-w-7xl mx-auto px-6 md:px-16">
                     <div className="text-center">
-                        <h1 className="text-white font-bold uppercase text-5xl">Discover UniVentures</h1>
-                        <p className="text-gray-400 mt-4 text-lg">
+                        <h1 className="text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE font-bold uppercase text-5xl">Discover UniVentures</h1>
+                        <p className="text-TEXT_LIGHTMODE dark:text-gray-400 mt-4 text-lg">
                             Your gateway to exciting campus adventures, hand-picked and tailored just for you.
                         </p>
                         <div className="h-0.5 bg-teal-700 w-16 mx-auto mt-6"></div>
@@ -44,10 +44,10 @@ function About() {
                     </div>
 
                     <div className="text-center mt-20">
-                        <p className="text-gray-400 text-lg leading-7">
+                        <p className="text-TEXT_LIGHTMODE dark:text-gray-400 text-lg leading-7">
                             No account? No problem! You can explore freely, but to create and review adventures, simply sign up and verify your university email.
                         </p>
-                        <p className="text-gray-400 text-lg mt-4">
+                        <p className="text-TEXT_LIGHTMODE dark:text-gray-400 text-lg mt-4">
                             Start planning your next adventure with UniVentures today!
                         </p>
                     </div>

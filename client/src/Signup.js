@@ -84,8 +84,7 @@ function Signup() {
 
 
 
-
-    const url = 'http://localhost:5000/api/auth/signup';
+    const url = '/api/auth/signup';
 
     // BUTTON PRESSED
     try {
@@ -108,7 +107,7 @@ function Signup() {
 
   // DONT MOVE DOWN - need to check if cookie exists
   if (loading) {
-    return <div className='bg-[#101c26] w-screen min-h-screen'><div><Banner /></div></div>;  // Could just put navbar here
+    return <div className='bg-BG_LIGHTMODE dark:bg-BG_DARKMODE w-screen min-h-screen'><div><Banner /></div></div>;  // Could just put navbar here
   }
 
   // COOKIE EXISTS - navigate to account page
@@ -118,12 +117,12 @@ function Signup() {
 
   // COOKIE DOES NOT EXIST - render sign up page
   return (
-    <div className='bg-[#101c26] min-h-screen overflow-auto'>
+    <div className='bg-BG_LIGHTMODE dark:bg-BG_DARKMODE min-h-screen overflow-auto'>
       <Banner />
       <section className='py-2'>
         <div className='max-w-lg mx-auto p-4 md:p-16 xl:p-20'>
           <div className='lg:w-2/3 space-y-5 text-center mx-auto'>
-            <h1 className='text-white uppercase tracking-wides font-medium text-4xl cursor-default'>
+            <h1 className='text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE uppercase tracking-wides font-medium text-4xl cursor-default'>
               Create an account
             </h1>
             <div className='h-0.5 bg-teal-700 w-14 mx-auto'></div>
@@ -134,7 +133,7 @@ function Signup() {
                 <div className='flex flex-col items-center'>
                   <form onSubmit={handleSubmit}>
                     <div className="flex items-center space-x-9 mb-4">
-                      <label className='text-white'>Email:</label>
+                      <label className='text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE'>Email:</label>
                       <input
                         type="email"
                         value={email}
@@ -144,11 +143,11 @@ function Signup() {
                           setError(null);
                         }}
                         required
-                        className='border text-gray-900 w-60 text-sm rounded focus:ring-0 focus:border-gray-400 block p-2 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white'
+                        className='border text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE w-60 text-sm rounded focus:ring-0 focus:border-gray-400 block p-2 bg-zinc-700/20 border-zinc-700/50'
                       />
                     </div>
                     <div className="flex items-center space-x-2 mb-4">
-                      <label className='text-white'>Password:</label>
+                      <label className='text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE'>Password:</label>
                       <input
                         type="password"
                         value={password}
@@ -158,7 +157,7 @@ function Signup() {
                           setError(null);
                         }}
                         required
-                        className="border rounded mb-2 w-60 border text-gray-900 text-sm rounded focus:ring-0 focus:border-gray-400 block p-2 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white"
+                        className="border text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE rounded mb-2 w-60 border text-sm rounded focus:ring-0 focus:border-gray-400 block p-2 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50"
                       />
                     </div>
                     <div className='flex justify-end w-full'>
@@ -182,7 +181,7 @@ function Signup() {
                     <p className="success font-bold text-white mt-4 mb-3 h-3">{message}</p>
                     <p className="error font-bold text-red-500 h-3">{error}</p>
                   </div>
-                  <span className="cursor-default text-white mt-16">
+                  <span className="cursor-default text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE mt-16">
                     Already have an account? <a href="/login" className="text-red-400">Login</a>
                   </span>
                 </div>

@@ -90,7 +90,7 @@ function Account() {
 
   // DONT MOVE DOWN TO LOGIN OR ACCOUNT PAGE YET - need to check if logged in already
   if (loading) {
-    return <div className='bg-[#101c26] w-screen min-h-screen'><div><Banner/></div></div>;  // Could just put navbar here
+    return <div className='bg-BG_LIGHTMODE dark:bg-BG_DARKMODE w-screen min-h-screen'><div><Banner/></div></div>;  // Could just put navbar here
   }
 
   // CHECK LOGIN COOKIE
@@ -143,18 +143,18 @@ function Account() {
 
   // LOGGED IN - ACCOUNT PAGE
   return (
-    <div className="bg-[#101c26] dark:bg-gray-900 min-h-screen text-white">
+    <div className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE min-h-screen text-white">
       {/* Navbar */}
       <Banner />
   
       {/* Account Info */}
       <div className="flex flex-col items-center justify-center h-full px-4">
-        <div className="bg-[#13222E] shadow-lg rounded-lg p-8 w-full max-w-full mx-auto">
+        <div className="dark:bg-[#13222E] bg-neutral-100 shadow-lg rounded-lg p-8 w-full max-w-full mx-auto">
           {/* Your Account */}
           {userInfo ? (
             <div className="">
               <div className="flex flex-col items-center">
-                <h1 className="text-4xl font-bold mb-8 cursor-default">Your Account</h1>
+                <h1 className="text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE text-4xl font-bold mb-8 cursor-default">Your Account</h1>
               </div>
               
             {/* Main Box */}
@@ -174,7 +174,7 @@ function Account() {
                   )}
 
                   {/* School Placeholder Text */}
-                  <p className="text-sm font-medium">{schoolPlaceholder}</p>
+                  <p className="text-sm font-medium text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{schoolPlaceholder}</p>
 
 
                 </div>
@@ -186,7 +186,7 @@ function Account() {
                       type="text"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-white rounded focus:outline-none"
+                      className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE rounded focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
                       disabled={!isEditing}
                       placeholder='First Name'
                     />
@@ -197,7 +197,7 @@ function Account() {
                       type="text"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-white rounded focus:outline-none"
+                      className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE rounded focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
                       disabled={!isEditing}
                       placeholder='Last Name'
                     />
@@ -231,7 +231,7 @@ function Account() {
                     <input
                       type="text"
                       value={userInfo.email}
-                      className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-white rounded focus:outline-none"
+                      className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE rounded focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
                       disabled="true"
                       placeholder='Email'
                     />
@@ -260,12 +260,12 @@ function Account() {
           ) : (
             <p>Loading account info...</p>
           )}
-          {message && <p className="flex flex-col items-center mt-4 text-white">{message}</p>}
+          {message && <p className="flex flex-col items-center mt-4 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{message}</p>}
           {error && <p className="text-red-500 mt-4">{error}</p>}
         </div>
         {/* Reviews Section */}
         <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">Your Reviews</h2>
+          <h2 className="text-xl font-bold mb-4 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">Your Reviews</h2>
           {reviewsLoading ? (
             <p>Loading reviews...</p>
           ) : (
@@ -279,7 +279,7 @@ function Account() {
                   </div>
                 ))
               ) : (
-                <p>No reviews found.</p>
+                <p className="text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">No reviews found.</p>
               )}
             </div>
           )}

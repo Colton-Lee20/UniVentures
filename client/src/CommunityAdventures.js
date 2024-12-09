@@ -76,7 +76,7 @@ const CommunityAdventures = ({ schoolID, filters }) => {
         {/* Surprise Me Button */}
         <button
           onClick={handleSurprise} // Call handleSurprise when the button is clicked
-          className="flex items-center gap-2 bg-yellow-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-yellow-600 transition-all"
+          className="flex items-center gap-2 bg-yellow-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-yellow-400 transform hover:scale-110 duration-300 hover:shadow-m hover:shadow-yellow-500 transition-all "
         >
           <StarIcon className="h-6 w-6" />
           Surprise Me
@@ -89,7 +89,7 @@ const CommunityAdventures = ({ schoolID, filters }) => {
           locations.map((location) => (
             <div
               key={location.place_id || location.name}
-              className="bg-white dark:bg-gray-800 border rounded-lg shadow-lg p-4 flex flex-col items-center cursor-pointer" // Add cursor-pointer for clickability
+              className="bg-white dark:bg-[#0b141c] border dark:border-[#0b141c] rounded-lg shadow-lg p-4 flex flex-col items-center cursor-pointer" // Add cursor-pointer for clickability
               onClick={() => handleActivityClick(location)}
             >
 
@@ -98,11 +98,12 @@ const CommunityAdventures = ({ schoolID, filters }) => {
                 alt={location.name}
                 className="w-full h-32 object-cover rounded-lg mb-4"
               />
-              <h3 className="font-semibold text-lg text-center">{location.name}</h3>
-              <p className="text-sm text-center text-gray-500 mt-2">{location.description}</p>
-              <p className="text-sm text-center text-gray-500 mt-2">{location.address}</p>
+              <h3 className="font-semibold text-lg text-center text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{location.name}</h3>
+              {/*    <p className="text-sm text-center text-gray-500 mt-2 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{location.description}</p>       */}
+              {/*     <p className="text-sm text-center text-gray-500 mt-2 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{location.address}</p>       */}
+
               {location.ratings && (
-                <div className="flex justify-center items-center mt-2">
+                <div className="flex justify-center items-center mt-2 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">
                   <StarRating rating={location.ratings} variant="star-icon" />
                 </div>
               )}
@@ -115,7 +116,7 @@ const CommunityAdventures = ({ schoolID, filters }) => {
 
         {/* Render the activity modal if an activity is selected */}
         {selectedActivity && (
-          <ActivityModal activity={selectedActivity} onClose={closeModal} />
+          <ActivityModal activity={selectedActivity} onClose={closeModal}/>
         )}
       </div>
     </div>

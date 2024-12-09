@@ -40,28 +40,30 @@ if (loading) return null;
       */
 
     if (loading) {
+        return (
         <div
-            className="bg-[#101c26] dark:bg-gray-800 overflow-auto flex flex-col items-center min-h-screen">
+            className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE overflow-auto flex flex-col items-center min-h-screen">
         </div>
+        )
     }
     else {
         return (
             // Main container with full height and width
-            <div className="bg-[#101c26] dark:bg-gray-800 overflow-auto flex flex-col items-center min-h-screen">
+            <div className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE overflow-auto flex flex-col items-center min-h-screen">
 
                 {/* Conditionally render the banner based on authentication status */}
                 {isLoggedIn ? <Banner /> : <NotSignedInBanner />}
 
                 {/* Centered content */}
-                <div className='flex flex-col items-center bg-[#101c26] '>
+                <div className='flex flex-col items-center bg-BG_LIGHTMODE dark:bg-BG_DARKMODE'>
 
                     {/* Title */}
-                    <div className='text-white font-serif text-7xl  pt-32'>
+                    <div className='text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE font-serif text-7xl  pt-32'>
                         UniVentures
                     </div>
 
                     {/* Tagline very close to the title */}
-                    <div className='text-white font-serif text-xl'>
+                    <div className='text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE font-serif text-xl'>
                         Find Your Next Campus Adventure
                     </div>
 

@@ -14,7 +14,7 @@ function About() {
                         You have adventured into an unheard of page! Let's
                         not be too adventurous and get back on 
                         <a href="/" className="text-teal-600"> track</a>
-                        .
+                        
                     </h2>
                 </div>
             </div>

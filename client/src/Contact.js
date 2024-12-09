@@ -39,16 +39,16 @@ function Contact() {
 
     return (
         //styling for contact page
-        <div className='bg-[#101c26] min-h-screen'>
+        <div className='bg-BG_LIGHTMODE dark:bg-BG_DARKMODE min-h-screen'>
             <Banner/>
             <section className='py-2'>
                 <div className='max-w-6xl mx-auto p-4 md:p-16 xl:p-20'>
                     <div className='lg:w-2/3 space-y-5 text-center mx-auto'>
-                        <h1 className='text-white uppercase tracking-wides font-medium text-4xl'>
+                        <h1 className='text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE uppercase tracking-wides font-medium text-4xl'>
                             Get in touch
                         </h1>
                         <div className='h-0.5 bg-teal-700 w-14 mx-auto'></div>
-                        <p className='text-gray-300 text-base leading-6'>
+                        <p className='text-TEXT_LIGHTMODE dark:text-gray-300 text-base leading-6'>
                             We'd love to hear from you!
                         </p>
                     </div>
@@ -64,7 +64,7 @@ function Contact() {
                                         id='name'
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className='border text-gray-900 text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white'
+                                        className='border text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder-gray-500 dark:placeholder:text-gray-300/50'
                                         placeholder='Enter your name'
                                         required
                                         />
@@ -75,7 +75,7 @@ function Contact() {
                                         id='email'
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className='border text-gray-900 text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white'
+                                        className='border text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder-gray-500 dark:placeholder:text-gray-300/50'
                                         placeholder='Enter your email'
                                         required
                                         />
@@ -87,7 +87,7 @@ function Contact() {
                                         id='subject'
                                         value={formData.subject}
                                         onChange={handleChange}
-                                        className='border text-gray-900 text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white'
+                                        className='border text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder-gray-500 dark:placeholder:text-gray-300/50'
                                         placeholder='Enter your subject'
                                         required
                                         />
@@ -97,7 +97,7 @@ function Contact() {
                                         id='comments'
                                         value={formData.comments}
                                         onChange={handleChange}
-                                        className='border text-gray-900 text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder:text-gray-300/50 text-white'
+                                        className='border text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE text-sm rounded focus:ring-0 focus:border-gray-400 block w-full p-3 bg-zinc-700/20 border-zinc-700/50 placeholder-gray-500 dark:placeholder:text-gray-300/50'
                                         placeholder='Enter your Message'
                                         rows='3'
                                         required

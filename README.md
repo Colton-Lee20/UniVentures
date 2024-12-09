@@ -1,12 +1,12 @@
 # UniVenture
 
 TO DO:
-Remove cookie on signup
-Redirect user to login page from signup
-    -notify them they should verify their account now and then login
-Remove change email
-Add account deletion
-
+- Remove change email
+- Add account deletion
+- Add transition to ActivityModal? (smooth slide up)
+- Move logout button to settings button?
+- Show reviews on Account page
+- Fix stars (only show 1 on preview maybe, show 5 once clicked on)
 
 
 

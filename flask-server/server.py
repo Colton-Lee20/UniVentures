@@ -17,7 +17,7 @@ app = Flask(__name__)
 #SESSION/COOKIE
 app.secret_key = 'bf2e7a21c3a6e54709d62d885c7cv965f793da2f4f489a23b7b3b94a93f869c4'
 app.config['SESSION_COOKIE_SECURE'] = False  # just for local development, ONCE USING HTTPS SHOULD BE True
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # sets cookie life span
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=14)  # sets cookie life span
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # just for local development, ONCE USING HTTPS SHOULD BE 'None'
 
 #EMAIL VERIFICATION
@@ -38,6 +38,7 @@ serializer = URLSafeTimedSerializer("AIAIfjaskldjKLAJAKLJDAasz2fa032m29") #shoul
 #   THE FOLLOWING CONNECTIONS ARE USED THROUGHOUT THE BACKEND
 #   TO CONNECT TO THE DATABASES AND KEEP A PERSISTENT CONNECTION
 #   info on flask.g: https://www.geeksforgeeks.org/when-should-flask-g-be-used/
+#   skibidi
 #
 
 #Connection to USERS database
@@ -307,6 +308,45 @@ def verify_email(token):
         cursor.close()
 
 
+# DELETE ACCOUNT ROUTE
+@app.route('/api/auth/delete_account', methods=['DELETE'])
+def delete_account():
+    # USER INPUT
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+
+    # GET DATABASE CONNECTION
+    db = get_db_connection_users()
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        # CHECK IF THE ACCOUNT EXISTS
+        query = "SELECT * FROM accounts WHERE email = %s"
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+
+        if not result:
+            return jsonify({"message": "Account not found"}), 404
+        
+        # VERIFY PASSWORD
+        stored_password_hash = result['password']
+        if not check_password_hash(stored_password_hash, password):
+            return jsonify({"message": "Invalid password"}), 401
+
+        # DELETE THE ACCOUNT
+        delete_query = "DELETE FROM accounts WHERE email = %s"
+        cursor.execute(delete_query, (email,))
+        db.commit()
+
+        # CLEAR SESSION (if applicable)
+        session.pop('user_id', None)
+
+        return jsonify({"message": "Account successfully deleted"}), 200
+    finally:
+        cursor.close()
+
+
 
 
 #
@@ -369,8 +409,8 @@ def get_school_locations(school_id):
 
     # Add optional filters
     if type_filter:
-        query += " AND type LIKE %s"
-        params.append(f"%{type_filter}%")
+        query += " AND type = %s"
+        params.append(f"{type_filter}")
     if ratings_filter is not None:
         query += " AND ratings >= %s"
         params.append(float(ratings_filter))
@@ -754,8 +794,13 @@ def get_reviews_by_user():
             cursor = connection.cursor(dictionary=True)
             # Modify this query based on your actual database schema
             query = """
-                SELECT * FROM reviews
-                WHERE user_id = %s
+                 SELECT reviews.*, 
+	            names.school_name AS school_name, 
+                locations.name AS location_name
+                FROM reviews
+                LEFT JOIN names ON reviews.school_id = names.id
+                LEFT JOIN locations ON reviews.location_id = locations.id
+                WHERE reviews.user_id = %s
             """
             cursor.execute(query, (user_id,))
             reviews = cursor.fetchall()
@@ -763,6 +808,42 @@ def get_reviews_by_user():
             return jsonify(reviews), 200
 
 
+        except Error as e:
+            return jsonify({'error': str(e)}), 500
+        finally:
+            cursor.close()
+            connection.close()
+    else:
+        return jsonify({'error': 'Database connection failed'}), 500
+    
+
+# Route to delete a review by review_id
+@app.route('/api/reviews/<int:review_id>', methods=['DELETE'])
+def delete_review(review_id):
+    # Connect to the database
+    connection = get_db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+
+            # Check if the review exists
+            check_query = """
+                SELECT * FROM reviews WHERE review_id = %s
+            """
+            cursor.execute(check_query, (review_id,))
+            review = cursor.fetchone()
+
+            if not review:
+                return jsonify({'error': 'Review not found'}), 404
+
+            # Delete the review from the database
+            delete_query = """
+                DELETE FROM reviews WHERE review_id = %s
+            """
+            cursor.execute(delete_query, (review_id,))
+            connection.commit()
+
+            return jsonify({'message': 'Review deleted successfully'}), 200
         except Error as e:
             return jsonify({'error': str(e)}), 500
         finally:

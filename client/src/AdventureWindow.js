@@ -123,9 +123,12 @@ const ActivityModal = ({ activity, onClose }) => {
                 {/* Modal Body */}
                 <div className="flex flex-col space-y-4 max-h-[80vh] overflow-y-auto px-5">
                     <img
-                        src={activity.image_url}
+                        src={activity.image_url ? activity.image_url : "/adventure-default.webp"}
                         alt={activity.name}
                         className="w-full h-64 object-cover rounded-lg shadow-md"
+                        onError={(e) => {
+                            e.target.src = '/adventure-default.webp';  // Set the fallback image on error
+                        }}
                     />
                     {/* Render description only for community adventures */}
                     {!isPublic && (
@@ -143,7 +146,7 @@ const ActivityModal = ({ activity, onClose }) => {
                     
                     {activity.ratings && !isPublic && (
                         <div>
-                        <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300">Ratings</h3>
+                        <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300">Leave a Rating</h3>
                         <StarRating
                             locationId={activity.id}
                             currentRating={currentRating}

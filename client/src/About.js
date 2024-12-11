@@ -50,6 +50,12 @@ function About() {
                         <p className="text-TEXT_LIGHTMODE dark:text-gray-400 text-lg mt-4">
                             Start planning your next adventure with UniVentures today!
                         </p>
+                        <p className="text-TEXT_LIGHTMODE dark:text-gray-400 text-s mt-36">
+                            This product uses OpenStreetMap data © OpenStreetMap contributors,
+                        </p>
+                        <p className="text-TEXT_LIGHTMODE dark:text-gray-400 text-s mt-1">
+                            and data sourced from the Hipo API under the MIT License.
+                        </p>
                     </div>
                 </div>
             </section>

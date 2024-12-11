@@ -12,6 +12,8 @@ import StarRating from './components/StarRating/StarRating';
 
 const SchoolDetail = () => {
 	const { schoolID } = useParams();
+	const [userId, setUserId] = useState(null);
+	const [userSchoolId, setUserSchoolId] = useState(null);
 	const [school, setSchool] = useState(null);
 	const [schoolImageURL, setSchoolImageURL] = useState('');
 	const [isWindowOpen, setWindowOpen] = useState(false);
@@ -23,17 +25,50 @@ const SchoolDetail = () => {
 	const dropdownRef = useRef(null);
 	const isActiveLink = location.pathname === `/school/${schoolID}` && location.search === '';
 
+	//get user id
+	useEffect(() => {
+		// Fetch user account data
+		const fetchUserData = async () => {
+			try {
+				const response = await axios.get('/api/account');
+				setUserId(response.data.id);
+				setUserSchoolId(response.data.schoolId);
+			} catch (error) {
+				console.error("Error fetching user data:", error);
+				setUserId(null); // Not logged in
+				setUserSchoolId(null);
+			}
+		};
 
+		fetchUserData();
+	}, []);
+
+	//
+	const handleClickAddAdventure = () => {
+		if (!userId) {
+			alert("You must be logged in to perform this action.");
+			return;
+		}
+
+		if (String(userSchoolId) !== schoolID) {
+			console.log(userSchoolId);
+			console.log(schoolID);
+			alert("This is not your school page.");
+			return;
+		}
+
+		toggleWindow();
+	};
 
 	const [pendingFilters, setPendingFilters] = useState({
 		type: '',
-		ratings: 5,
+		ratings: 0,		//default show all ratings
 	});
 
 	const [sendingFilters, setSendingFilters] = useState({
 		type: '',
-		ratings: 5,
-  });
+		ratings: 0,		//show all ratings
+	});
 
 	const toggleWindow = () => setWindowOpen(!isWindowOpen);
 	const toggleFilter = () => setFilterOpen(!isFilterOpen);
@@ -50,18 +85,26 @@ const SchoolDetail = () => {
 	};
 
 
+
 	//FILTER
 	const applyFilters = () => {
 		//Close Filter
 		setFilterOpen(false);
 		setTypeFilterOpen(false);
 
-		//PUBLIC Filters Applied
+
+		/***************************
+		   PUBLIC Filters Applied
+		****************************/
 		if (activeTab === "Public Adventures") {
 
 		}
 
-		//COMMUNITY Filters Applied
+
+
+		/***************************
+		   COMMUNITY Filters Applied
+		****************************/
 		else {
 			//Make type just a letter
 			const typeMappings = {
@@ -79,16 +122,16 @@ const SchoolDetail = () => {
 			const mappedType = typeMappings[entireType] || '';
 
 			setSendingFilters({
-            type: mappedType,
-            ratings: pendingFilters.ratings,
-        });
+				type: mappedType,
+				ratings: pendingFilters.ratings,
+			});
 		}
 	};
 
 	const resetFilters = () => {
 		setPendingFilters({
 			type: '',
-			ratings: 5, // Reset ratings to default
+			ratings: 0, // Reset ratings to default
 		});
 
 		//TO DO
@@ -259,26 +302,26 @@ const SchoolDetail = () => {
 										)}
 									</div>
 
-                                    {/* Ratings */}
-                                    <div className="mt-4">
-                                        <label className="flex flex-col items-center block text-gray-700 dark:text-white mb-2">
-                                            Ratings
-                                        </label>
-                                        <input
-                                            type="range"
-                                            min="1"
-                                            max="5"
-                                            step="0.5"
-                                            className="w-full cursor-pointer accent-teal-700"
-                                            value={pendingFilters.ratings}
-                                            onChange={(e) =>
-                                                setPendingFilters((prev) => ({ ...prev, ratings: Number(e.target.value) }))
-                                            }
-                                        />
-									<div className="flex justify-center items-center mt-2"></div>
-                                        {/* Use StarRating to Display Stars Dynamically */}
-                                        <StarRating rating={pendingFilters.ratings}/>
-                                    </div>
+									{/* Ratings */}
+									<div className="mt-8">
+										<label className="flex flex-col items-center block text-gray-700 dark:text-white mb-2">
+											Rating
+										</label>
+										<input
+											type="range"
+											min="0"
+											max="5"
+											step="0.5"
+											className="w-full cursor-pointer accent-teal-700"
+											value={pendingFilters.ratings}
+											onChange={(e) =>
+												setPendingFilters((prev) => ({ ...prev, ratings: Number(e.target.value) }))
+											}
+										/>
+										<div className="flex justify-center items-center mt-2"></div>
+										{/* Use StarRating to Display Stars Dynamically */}
+										<StarRating rating={pendingFilters.ratings} />
+									</div>
 
 
 									{/* Apply Button */}
@@ -318,12 +361,11 @@ const SchoolDetail = () => {
 								</button>
 								<NavLink
 									to={`/school/${schoolID}`}
-									className={`px-4 py-2 text-lg font-medium ${
-										isActiveLink
-										  ? 'text-teal-600 border-b-2 border-teal-600'
-										  : 'text-gray-500 dark:text-gray-300 hover:text-teal-500 dark:hover:text-teal-500'
-									 }`}
-									
+									className={`px-4 py-2 text-lg font-medium ${isActiveLink
+										? 'text-teal-600 border-b-2 border-teal-600'
+										: 'text-gray-500 dark:text-gray-300 hover:text-teal-500 dark:hover:text-teal-500'
+										}`}
+
 								>
 									Public Adventures
 								</NavLink>
@@ -336,7 +378,7 @@ const SchoolDetail = () => {
 										}`
 									}
 									onClick={() => {
-										
+
 										resetFilters();
 									}}
 								>
@@ -353,13 +395,13 @@ const SchoolDetail = () => {
 						))}
 					</div>
 					*/}
-					
+
 					<div className="mt-8">
 						{activeTab === 'Public Adventures' ? (
-                    <Adventures schoolID={schoolID} filters={sendingFilters} />
-                ) : (
-                    <CommunityAdventures schoolID={schoolID} filters={sendingFilters} />
-                )}
+							<Adventures schoolID={schoolID} filters={sendingFilters} />
+						) : (
+							<CommunityAdventures schoolID={schoolID} filters={sendingFilters} />
+						)}
 					</div>
 				</div>
 
@@ -370,7 +412,9 @@ const SchoolDetail = () => {
 					onSubmit={handleAddAdventure}
 				/>
 
-				<StaticPlusButton onClick={toggleWindow} />
+				{activeTab === 'Community Adventures' && (
+					<StaticPlusButton onClick={handleClickAddAdventure} />
+				)}
 			</div>
 		</main>
 	);

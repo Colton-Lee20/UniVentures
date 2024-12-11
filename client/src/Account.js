@@ -9,8 +9,8 @@ function Account() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);    // Logged in boolean
   const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState('');                 // Error to display if no account
-  const [firstName, setFirstName] = useState(userInfo?.firstName || '');
-  const [lastName, setLastName] = useState(userInfo?.lastName || '');
+  const [firstName, setFirstName] = useState(userInfo?.firstName || "");
+  const [lastName, setLastName] = useState(userInfo?.lastName || "");
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState('');
   const [schoolPlaceholder, setSchoolPlaceholder] = useState('');
@@ -57,6 +57,7 @@ function Account() {
     try {
       const response = await axios.get(`/api/reviews/user?user_id=${userId}`);
       setReviews(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching reviews:", error);
       setError("Failed to load reviews");
@@ -111,7 +112,7 @@ function Account() {
 
   //FIRST NAME LAST NAME EDIT
   const handleSave = async () => {
-    if (firstName == userInfo.firstName && lastName == userInfo.lastName) {
+    if (firstName === userInfo.firstName && lastName === userInfo.lastName) {
       setIsEditing(false);
       return;
     }
@@ -141,20 +142,69 @@ function Account() {
     }
   };
 
+  //DELETE REVIEW
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      
+      const response = await fetch(`/api/reviews/${reviewId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      
+      if (response.ok) {
+        setReviews((prevReviews) => prevReviews.filter((review) => review.review_id !== reviewId));
+      } 
+      else {
+        const data = await response.json();
+        alert(`Error: ${data.error || 'Something went wrong'}`);
+      }
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      alert('Failed to delete review. Please try again.');
+    }
+  };
+
   //DELETE ACCOUNT
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await fetch('/api/auth/delete_account', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userInfo.email, // Assuming this comes from your user state
+          password: deletePasswordInput, // User's entered password
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message); // Success message
+        // Optionally, redirect to the homepage or login page
+        window.location.href = '/';
+      } else {
+        alert(data.message); // Show error message
+      }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert('An error occurred while deleting your account.');
+    }
 
   };
 
 
   // LOGGED IN - ACCOUNT PAGE
   return (
-    <div className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE min-h-screen text-white">
+    <div className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE h-screen text-white overflow-x-hidden">
       {/* Navbar */}
       <Banner />
 
       {/* Account Info */}
-      <div className="flex flex-col items-center justify-center h-full px-4">
+      <div className="flex flex-col items-center justify-center px-4">
         <div className="relative dark:bg-[#13222E] bg-neutral-100 shadow-lg rounded-lg p-8 w-full max-w-full mx-auto">
           {/* Your Account */}
           {userInfo ? (
@@ -201,7 +251,7 @@ function Account() {
                     <div className="w-1/2">
                       <input
                         type="text"
-                        value={firstName}
+                        value={firstName || ""}
                         onChange={(e) => setFirstName(e.target.value)}
                         className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE rounded focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
                         disabled={!isEditing}
@@ -212,7 +262,7 @@ function Account() {
                     <div className="w-1/2">
                       <input
                         type="text"
-                        value={lastName}
+                        value={lastName || ""}
                         onChange={(e) => setLastName(e.target.value)}
                         className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE rounded focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
                         disabled={!isEditing}
@@ -247,9 +297,9 @@ function Account() {
                     <div className="w-full">
                       <input
                         type="text"
-                        value={userInfo.email}
+                        value={userInfo.email || ""}
                         className="w-full px-3 py-2 bg-zinc-700/20 border border-zinc-700/50 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE rounded focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
-                        disabled="true"
+                        disabled={true}
                         placeholder='Email'
                       />
                     </div>
@@ -270,50 +320,75 @@ function Account() {
           )}
           {message && <p className="flex flex-col items-center mt-4 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{message}</p>}
           {error && <p className="text-red-500 mt-4">{error}</p>}
-
-          {/* Delete Account Button */}
-          <button
-            className="absolute bottom-4 right-4 text-sm text-gray-500 hover:text-gray-700"
-            onClick={handleDeleteAccount}
-          >
-            Delete Account
-          </button>
         </div>
       </div>
 
 
 
       {/* Reviews Section */}
-      <div className="mt-12 flex flex-col items-center justify-center h-full px-4">
+      <div className="mt-12 flex flex-col items-center justify-center px-4">
         <div className="dark:bg-[#13222E] bg-neutral-100 shadow-lg rounded-lg w-full p-8 mx-auto">
           <div>
-            <h1 className="flex flex-col items-center text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE text-4xl font-bold mb-8 cursor-default">Your Reviews</h1>
+            <h1 className="flex flex-col items-center text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE text-4xl font-bold mb-8 cursor-default">
+              Your Reviews
+            </h1>
             {reviewsLoading ? (
               <p className="flex flex-col items-center">Loading reviews...</p>
             ) : (
               <div className="flex flex-col items-center space-y-4">
                 {reviews.length > 0 ? (
                   reviews.map((review) => (
-                    <div key={review.id} className="border-b border-gray-600 pb-4">
-                      <h3 className="text-lg font-semibold">{review.review_text}</h3>
-                      <p>{review.comment}</p>
-                      <p className="text-sm text-gray-400">Rating: {review.rating} / 5</p>
+                    <div
+                      key={review.review_id}
+                      className="text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE border-b border-gray-600 pb-4 relative w-full"
+                    >
+                      <div className="flex items-start justify-between w-full">
+
+                        {/* Review Content */}
+                        <div className="ml-2 flex-1">
+                          <div className="font-semibold text-lg">
+                            <p className="font-bold">
+                              {review.location_name} <span className="font-normal">at</span>{' '}
+                              <a
+                                href={`/school/${review.school_id}`}
+                                className="text-teal-500 hover:underline"
+                              >
+                                {review.school_name}
+                              </a>
+                            </p>
+                          </div>
+                          <div className="text-sm mt-2 italic">
+                            <p>"{review.review_text}"</p>
+                          </div>
+                        </div>
+                        {/* Delete Button */}
+                        <button
+                          className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer"
+                          onClick={() => handleDeleteReview(review.review_id)} // Replace with your delete function later
+                        >
+                          <span className="text-xs font-semibold">X</span>
+                        </button>
+                      </div>
                     </div>
                   ))
                 ) : (
-                  <p className="text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">You have no reviews! Go explore and come back!</p>
+                  <p className="text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">
+                    You have no reviews! Go explore and come back!
+                  </p>
                 )}
               </div>
             )}
           </div>
         </div>
-
       </div>
 
 
 
+
+
+
       {/*Delete account */}
-      <div className="mt-12 flex flex-col items-center justify-center h-full px-4 overflow-hidden">
+      <div className="mt-12 flex flex-col items-center justify-center mb-12 px-4">
         <div className="dark:bg-[#13222E] bg-neutral-100 shadow-lg rounded-lg w-full p-8 mx-auto">
           <div>
             <h1 className="flex flex-col items-center text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE text-4xl font-bold mb-8 cursor-default">Leave UniVentures</h1>
@@ -328,10 +403,10 @@ function Account() {
               />
               <button
                 onClick={handleDeleteAccount}
-                disabled={deletePasswordInput !== userInfo.password}
-                className={`px-4 py-2 font-bold rounded ${deletePasswordInput === userInfo.email
-                    ? "bg-red-700 hover:bg-red-600 text-white"
-                    : "bg-gray-400 text-gray-700 cursor-not-allowed"
+                disabled={deletePasswordInput.length < 8}
+                className={`px-4 py-2 font-bold rounded ${deletePasswordInput.length >= 8
+                  ? "bg-red-700 hover:bg-red-600 text-white"
+                  : "bg-gray-400 text-gray-700 cursor-not-allowed"
                   }`}
               >
                 Delete

@@ -241,7 +241,7 @@ const SchoolDetail = () => {
 */}
 
 	return (
-		<main className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE">
+		<main className="bg-BG_LIGHTMODE dark:bg-BG_DARKMODE overflow-x-hidden">
 			<div className={`min-h-screen flex flex-col`}>
 				<Banner />
 				<div className="p-4 relative">

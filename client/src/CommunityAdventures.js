@@ -56,8 +56,6 @@ const CommunityAdventures = ({ schoolID, filters }) => {
       }
       const data = await response.json();
 
-      console.log("Surprise location data:", data); // Debugging log
-
       // Update the surprise location state
       setSelectedActivity(data);
     } catch (error) {
@@ -85,9 +83,10 @@ const CommunityAdventures = ({ schoolID, filters }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
         {locations.length > 0 ? (
+          
           locations.map((location) => (
             <div
-              key={location.place_id || location.name}
+              key={location.id}
               className="bg-white dark:bg-[#0b141c] border dark:border-[#0b141c] rounded-lg shadow-lg p-4 flex flex-col items-center cursor-pointer" // Add cursor-pointer for clickability
               onClick={() => handleActivityClick(location)}
             >

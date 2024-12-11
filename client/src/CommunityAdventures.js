@@ -38,7 +38,6 @@ const CommunityAdventures = ({ schoolID, filters }) => {
   if (error) return <p className="text-red-500">{error}</p>;
 
   const handleActivityClick = (location) => {
-    console.log('Activity clicked:', location);
     setSelectedActivity(location);
   };
 
@@ -94,9 +93,12 @@ const CommunityAdventures = ({ schoolID, filters }) => {
             >
 
               <img
-                src={location.image_url}
-                alt={location.name}
+                src={location.image_url ? location.image_url : "/adventure-default.webp"}
+                alt={"No Image Available"}
                 className="w-full h-32 object-cover rounded-lg mb-4"
+                onError={(e) => {
+                  e.target.src = '/adventure-default.webp';  // Set the fallback image on error
+                }}
               />
               <h3 className="font-semibold text-lg text-center text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{location.name}</h3>
               {/*    <p className="text-sm text-center text-gray-500 mt-2 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">{location.description}</p>       */}

@@ -59,15 +59,22 @@ const Adventures = () => {
               />
             ) : (
               <div className="w-full h-32 bg-gray-200 dark:bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
-                <span className="text-gray-500">No Image Available</span>
+                <img
+                  src='adventure-default.webp'
+                  alt="No Image Available"
+                  className="w-full h-32 object-cover rounded-lg mb-4"
+                />
               </div>
             )}
             <h3 className="font-semibold text-lg text-center text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">
               {adventure.name}
             </h3>
+            
+            {/*
             <p className="text-sm text-center text-gray-500 mt-2 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">
               {adventure.vicinity}
             </p>
+            */}
             {adventure.rating && (
               <div className="flex items-center mt-2 text-TEXT_LIGHTMODE dark:text-TEXT_DARKMODE">
                 {/* Pass rating to StarRating */}

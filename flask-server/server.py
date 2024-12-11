@@ -333,6 +333,7 @@ def search_schools():
 @app.route('/api/schools/<int:school_id>', methods=['GET'])
 def get_school_by_id(school_id):
     db = get_db_connection_schools()
+    
     cursor = db.cursor(dictionary=True)
 
     try:
@@ -341,6 +342,7 @@ def get_school_by_id(school_id):
             school = cursor.fetchone()  # Fetch the school details
 
             if school:
+            
                 return jsonify(school)  # Return the school data in JSON format
             else:
                 return jsonify({'error': 'School not found'}), 404  # Return 404 if not found
@@ -370,8 +372,8 @@ def get_school_locations(school_id):
         query += " AND type LIKE %s"
         params.append(f"%{type_filter}%")
     if ratings_filter is not None:
-        query += " AND ratings <= %s"
-        params.append(int(ratings_filter))
+        query += " AND ratings >= %s"
+        params.append(float(ratings_filter))
 
     cursor.execute(query, params)
     locations = cursor.fetchall()
@@ -508,7 +510,7 @@ def add_adventure():
         rating = data.get('rating')
 
         # Validate input
-        if not all([school_id, name, description, image_url, address]):
+        if not all([school_id, name, description, address]):
             return jsonify({"error": "All fields are required"}), 400
 
         # SQL query with placeholders
@@ -741,7 +743,6 @@ def get_reviews():
 @app.route('/api/reviews/user', methods=['GET'])
 def get_reviews_by_user():
     user_id = request.args.get('user_id')
-    print(f"Received request for user_id: {user_id}")  # Log the user_id
 
     if not user_id:
         return jsonify({'error': 'Missing user_id parameter'}), 400
@@ -759,10 +760,8 @@ def get_reviews_by_user():
             cursor.execute(query, (user_id,))
             reviews = cursor.fetchall()
 
-            if reviews:
-                return jsonify(reviews), 200
-            else:
-                return jsonify({'message': 'No reviews found for this user'}), 404
+            return jsonify(reviews), 200
+
 
         except Error as e:
             return jsonify({'error': str(e)}), 500

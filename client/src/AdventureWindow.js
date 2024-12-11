@@ -138,7 +138,10 @@ const ActivityModal = ({ activity, onClose }) => {
                         <h3 className="text-xl text-gray-700 dark:text-gray-300 font-bold">Location</h3>
                         <p className="text-gray-600 dark:text-gray-400">{activity.address}</p>
                     </div>
-                    {activity.ratings && (
+
+                    {/* Render reviews only for community adventures */}
+                    
+                    {activity.ratings && !isPublic && (
                         <div>
                         <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300">Ratings</h3>
                         <StarRating
@@ -148,6 +151,8 @@ const ActivityModal = ({ activity, onClose }) => {
                         />
                     </div>
                     )}
+                    
+                    {!isPublic && (
                     <div>
                         <h3 className="text-xl text-gray-700 dark:text-gray-300 font-bold">Write a Review</h3>
 
@@ -170,8 +175,11 @@ const ActivityModal = ({ activity, onClose }) => {
                             </button>
                         </div>
                     </div>
+                    )}
 
-                    {/* Display Reviews */}
+                    
+                    {/* Display Reviews only for community */}
+                    {!isPublic && (
                     <div>
                         <h3 className=" mb-5 text-xl text-gray-700 dark:text-gray-300 font-bold">View Reviews</h3>
                         {reviews.length > 0 ? (
@@ -187,6 +195,9 @@ const ActivityModal = ({ activity, onClose }) => {
                             <p className="text-gray-500 dark:text-gray-400">No reviews yet.</p>
                         )}
                     </div>
+                    )}
+
+                    
 
                 </div>
 

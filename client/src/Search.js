@@ -20,7 +20,6 @@ const SearchBar = () => {
 
                     const response = await axios.get('/api/account', { withCredentials: true });
                     const userInfo = response.data;
-                    console.log(userInfo);
                     if (userInfo && userInfo.schoolId) {
                         setSchoolId(userInfo.schoolId);
                         setHasSchool(true);
@@ -56,7 +55,6 @@ const SearchBar = () => {
         try {
             const response = await axios.get('/api/account', { withCredentials: true });
             const userInfo = response.data;
-            console.log(userInfo);
             if (userInfo && userInfo.schoolId) {
                 navigate(`/school/${userInfo.schoolId}`);
             }

@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {ChevronDownIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon } from '@heroicons/react/solid';
 
 
 
 const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
-    
-	const dropdownRef = useRef(null);
-    const [pendingFilters, setPendingFilters] = useState({type: 'O'});
+
+    const dropdownRef = useRef(null);
+    const [pendingFilters, setPendingFilters] = useState({ type: 'O' });
     const [typeFilterOpen, setTypeFilterOpen] = useState(false);
     const toggleTypeFilter = () => setTypeFilterOpen(!typeFilterOpen);
     const activeFilters = ['Activity', 'Bar', 'Class', 'Club', 'Event', 'Restaurant', 'Store', 'Other'];
+    const [isImageSelected, setIsImageSelected] = useState(false);
 
     const typeMappings = {
         'Activity': 'A',
@@ -21,19 +22,26 @@ const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
         'Store': 'S',
         'Other': 'O'
     };
-	
-	const handleTypeSelect = (type) => {
+
+    const handleTypeSelect = (type) => {
         setPendingFilters((prev) => ({ ...prev, type: typeMappings[type] }));
         setTypeFilterOpen(false);
     };
 
+    const handleImageSelectionChange = () => {
+        setIsImageSelected(prevState => !prevState);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const imageUrlValue = isImageSelected ? e.target.imageUrl.value : '';
+
         const formData = {
             adventureName: e.target.adventureName.value,
             type: pendingFilters.type,
             description: e.target.description.value,
-            imageUrl: e.target.imageUrl.value,
+            imageUrl: imageUrlValue,
             address: e.target.address.value,
             rating: parseFloat(e.target.rating.value),
         };
@@ -61,12 +69,12 @@ const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
                             type="text"
                             id="adventureName"
                             className="w-full p-2 border rounded"
-                            placeholder="Enter adventure name"
+                            placeholder="enter adventure name"
                             required
                         />
                     </div>
                     <label className="block text-sm font-bold mb-2">
-                            Type
+                        Type
                     </label>
                     {/* Type Dropdown */}
                     <div
@@ -78,7 +86,7 @@ const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
                             onClick={toggleTypeFilter}
                             className="w-full border flex items-center justify-between px-2 py-2 mb-2 rounded"
                         >
-                             <span>{pendingFilters.type ? Object.keys(typeMappings).find(key => typeMappings[key] === pendingFilters.type) : ''}</span>
+                            <span>{pendingFilters.type ? Object.keys(typeMappings).find(key => typeMappings[key] === pendingFilters.type) : ''}</span>
                             <ChevronDownIcon className="h-5 w-5" />
                         </button>
                         {typeFilterOpen && (
@@ -106,46 +114,59 @@ const AddAdventure = ({ isOpen, toggleWindow, onSubmit }) => {
                             type="text"
                             id="description"
                             className="w-full p-2 border rounded"
-                            placeholder="Enter description"
+                            placeholder="enter description"
                             required
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-sm font-bold mb-2">
-                            Image Url
-                        </label>
+                    
+                    <div className="mb-4 flex items-center">
                         <input
-                            type="text"
-                            id="imageUrl"
-                            className="w-full p-2 border rounded"
-                            placeholder="Enter Image Url"
-                            required
+                            type="checkbox"
+                            id="imageOption"
+                            checked={isImageSelected}
+                            onChange={handleImageSelectionChange}
+                            className="mr-2"
                         />
+                        <label htmlFor="imageOption" className="text-sm font-bold">
+                            Use Image URL
+                        </label>
                     </div>
+
+                    {isImageSelected && (
+                        <div className="mb-4">
+                            <label className="block text-sm font-bold mb-2">Image URL</label>
+                            <input
+                                type="text"
+                                id="imageUrl"
+                                className="w-full p-2 border rounded"
+                                placeholder="enter Image URL"
+                            />
+                        </div>
+                    )}
                     <div className="mb-4">
                         <label className="block text-sm font-bold mb-2">
-                            Address
+                            Location
                         </label>
                         <input
                             type="text"
                             id="address"
                             className="w-full p-2 border rounded"
-                            placeholder="Enter address"
+                            placeholder="enter location or address"
                             required
                         />
                     </div>
                     <div className="mb-4">
                         <label className="block text-sm font-bold mb-2">
-                            Rating out of 5
+                            Your Rating (out of 5)
                         </label>
                         <input
                             type="number"
                             id="rating"
                             className="w-full p-2 border rounded"
-                            placeholder="Enter rating number out of 5"
+                            placeholder="enter your rating"
                             min="1"
                             max="5"
-                            step="0.1" 
+                            step="0.1"
                             required
                         />
                     </div>

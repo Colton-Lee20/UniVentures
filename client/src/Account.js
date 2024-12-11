@@ -345,7 +345,7 @@ function Account() {
                       <div className="flex items-start justify-between w-full">
 
                         {/* Review Content */}
-                        <div className="ml-2 flex-1">
+                        <div className="ml-2 flex-1 text-center">
                           <div className="font-semibold text-lg">
                             <p className="font-bold">
                               {review.location_name} <span className="font-normal">at</span>{' '}
@@ -357,7 +357,7 @@ function Account() {
                               </a>
                             </p>
                           </div>
-                          <div className="text-sm mt-2 italic">
+                          <div className="text-sm mt-2 italic text-center">
                             <p>"{review.review_text}"</p>
                           </div>
                         </div>

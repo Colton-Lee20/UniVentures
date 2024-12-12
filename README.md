@@ -112,9 +112,11 @@ CREATE TABLE `users`.`accounts` (
   `lastName` VARCHAR(255) NULL,
   `schoolName` VARCHAR(255) NULL,
   `schoolID` INT NULL,
+  `verified` TINYINT DEFAULT 0, 
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
+  
 
 CREATE TABLE `schools`.`names` (
   `id` INT NOT NULL AUTO_INCREMENT,

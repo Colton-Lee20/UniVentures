@@ -51,7 +51,57 @@ schools
         type VARCHAR(3),
         ratings DOUBLE,
         FOREIGN KEY (school_id) REFERENCES schools(id)
+
     
+
+    CREATE TABLE `users`.`accounts` (
+      `id` INT NOT NULL AUTO_INCREMENT,
+      `email` VARCHAR(255) NOT NULL,
+      `password` VARCHAR(255) NOT NULL,
+      `firstName` VARCHAR(255) NULL,
+      `lastName` VARCHAR(255) NULL,
+      `schoolName` VARCHAR(255) NULL,
+      `schoolID` INT NULL,
+      `verified` TINYINT DEFAULT 0, 
+      PRIMARY KEY (`id`),
+      UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+      UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE
+      );
+  
+
+    CREATE TABLE `schools`.`names` (
+      `id` INT NOT NULL AUTO_INCREMENT,
+      `school_name` VARCHAR(255) NOT NULL,
+      `domain` VARCHAR(255) NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE
+      );
+      
+    CREATE TABLE `schools`.`locations` (
+      `id` INT NOT NULL AUTO_INCREMENT,
+      `school_id` INT,
+      `name` VARCHAR(255),
+      `description` TEXT,
+      `image_url` VARCHAR(255),
+      `address` VARCHAR(255),
+      `type` VARCHAR(3),
+      `ratings` DOUBLE,
+      PRIMARY KEY (`id`),
+      FOREIGN KEY (`school_id`) REFERENCES `names`(`id`)
+    );
+    
+    CREATE TABLE schools.user_ratings (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        location_id INT NOT NULL,
+        user_id INT NOT NULL,
+        rating TINYINT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_rating (location_id, user_id),
+        FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users.accounts(id) ON DELETE CASCADE
+    );
+
     CREATE TABLE `reviews` (
         `review_id` INT NOT NULL AUTO_INCREMENT,
         `school_id` INT NOT NULL,
@@ -77,19 +127,6 @@ schools
         AUTO_INCREMENT=5 
         DEFAULT CHARSET=utf8mb4 
         COLLATE=utf8mb4_0900_ai_ci;
-
-
-    CREATE TABLE schools.user_ratings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    location_id INT NOT NULL,
-    user_id INT NOT NULL,
-    rating TINYINT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_rating (location_id, user_id),
-    FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users.accounts(id) ON DELETE CASCADE
-    );
     
 
 
@@ -103,27 +140,6 @@ R = restaurant
 S = store
 O = other
 
-
-CREATE TABLE `users`.`accounts` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `email` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(255) NOT NULL,
-  `firstName` VARCHAR(255) NULL,
-  `lastName` VARCHAR(255) NULL,
-  `schoolName` VARCHAR(255) NULL,
-  `schoolID` INT NULL,
-  `verified` TINYINT DEFAULT 0, 
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
-  
-
-CREATE TABLE `schools`.`names` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `school_name` VARCHAR(255) NOT NULL,
-  `domain` VARCHAR(255) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
 
 
 

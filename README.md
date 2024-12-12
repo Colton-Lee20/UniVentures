@@ -4,6 +4,7 @@
 Required Installs:
 pip install mysql-connector-python
 pip install requests (for universities database function)
+pip install Flask-Mail
 npm install @heroicons/react
 
 -----------------------------------------------------------------
